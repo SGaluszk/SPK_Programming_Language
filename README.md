@@ -1,4 +1,4 @@
-# SPK_Programming_Language
+# SPK ProgrammingLanguage
 
 ## Szymon Gałuszka, Paweł Pytlowski, Krzysztof Sawina
 
