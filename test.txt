@@ -1,0 +1,11 @@
+CALKOWITA   x   =   2
+CALKOWITA   x2   =   22
+ULAMKOWA ulamek = 1.2
+
+
+
+ULAMKOWA ulamek2 = 0.1234 ?? jeden komentarz
+??   as
+LISTA l = [ 1 2   3 4 5  6 9]
+
+JEZELI x < 2 TO CALKOWITA x2 = 2
