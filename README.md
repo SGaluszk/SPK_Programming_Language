@@ -11,28 +11,38 @@ Do dyspozycji użytkownika będzie aplikacja okienkowa z polem tekstowym do wpis
 ### Przykłady konstrukcji w języku
 - definicja zmiennych
 CAŁKOWITA x = 5
+
 NAPIS n = “Przykładowy tekst”
+
 LISTA l = [1 2 3 4 5]
 
 - operatory logiczne i arytmetyczne
+
 +, -, *, /, ^, =, ==, /=, <, <=, >, >=, (), ++, -- 
 
 - instrukcje warunkowe
+
 JEŻELI x < 3 TO x++ INACZEJ x = 1
 
 - pętle
+
 DOPÓKI x > 0 TO {WYPISZ “x wynosi” + X}
+
 DLA i Z [OD 1 DO 9] ZRÓB …
 
 - wypisywanie/wpisywanie danych
+
 WYPISZ “Witaj świecie!”
+
 WPISZ zmienna_do_wpisania
 
 - konkatenacja napisów
+
 “Ala ” … “ ma kota”
 “Pora” … “ na csa”
 
 
 - deklaracja funkcji
+
 FUNKCJA fun(CAŁKOWITA x, NAPIS tekst){ ciało funkcji }
 
