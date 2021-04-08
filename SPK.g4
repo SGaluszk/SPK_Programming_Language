@@ -1,67 +1,93 @@
 grammar SPK;
 
+program : bigStmt* EOF;
 
-// program : (instruction (NL|EOF))* ;
-program : instruction (NL instruction)*;
-block : instruction (NL instruction)*;
+bigStmt : (if_ | declaration);
 
-instruction : (integer | integer_list | float_ | string);
+if_ : IF_ condition_block THEN_ block;
 
-integer : 'CALKOWITA '  VARIABLE_NAME  ASSIGN  INTEGER_NUMBER;
-integer_list : 'LISTA '  VARIABLE_NAME  ASSIGN  '['  (INTEGER_NUMBER )*  ']';
-float_ : 'ULAMKOWA' VARIABLE_NAME  ASSIGN  FLOAT_NUMBER;
-string : 'NAPIS ' VARIABLE_NAME ASSIGN STRING;
+condition_block : expr;
 
-//if_ : 'JEZELI ' IF_ELEMENT_COMPARABLE COMPARATOR IF_ELEMENT_COMPARABLE ' TO ' block;
+block : OBRACE block CBRACE | bigStmt+;
 
-//IF_ELEMENT_COMPARABLE: (VARIABLE_NAME | INTEGER_NUMBER | FLOAT_NUMBER | STRING);
-//COMPARATOR : (EQUALS | NOT_EQUALS | LESS_THAN | GREATER_THAN | LESS_THAN_OR_EQUAL | GREATER_THAN_OR_EQUAL);
-COMMENT : '??' ~[\r\n\f]* NL -> skip;
+declaration : TYPE_NAME VARIABLE_NAME ASSIGN expr SEP;
 
-// variable_name : VARIABLE_NAME; //Bo inaczej implicit
+TYPE_NAME : (INT | LIST | FLOATING | STRING_ );
+INT : 'CALKOWITA' ;
+LIST : 'LISTA';
+FLOATING : 'ULAMKOWA';
+STRING_ : 'NAPIS';
+IF_ : 'JEZELI';
+THEN_ : 'TO';
 
-VARIABLE_NAME : VALID_ID_START VALID_ID_CONTINUE*  ;
+expr
+ : expr POW expr                        
+ | MINUS expr                           
+ | NOT expr                             
+ | expr op=(MULT | DIV | MOD) expr      
+ | expr op=(PLUS | MINUS) expr          
+ | expr op=(LTEQ | GTEQ | LT | GT) expr 
+ | expr op=(EQ | NEQ) expr              
+ | expr AND expr                        
+ | expr OR expr                         
+ | atom                          
+ ;
 
+atom
+ : OPAR expr CPAR 
+ | (INTEGER_NUMBER | FLOAT_NUMBER)  
+ | VARIABLE_NAME            
+ | STRING  
+ | OSQBRACE (INTEGER_NUMBER | FLOAT_NUMBER)* CSQBRACE     
+ ;
+
+
+VARIABLE_NAME
+ : [a-zA-Z_] [a-zA-Z_0-9]*
+ ;
+ 
 
 INTEGER_NUMBER : NON_ZERO_DIGIT DIGIT*;
 FLOAT_NUMBER : NON_ZERO_DIGIT DIGIT* '.' DIGIT+ | '0.' DIGIT+;
-STRING : '"' STRING_CHAR* '"';
+STRING
+ : '"' (~["\r\n] | '""')* '"'
+ ;
 
-STRING_CHAR : [A-Z] | [a-z]; // dodać wszystkie inne znaki
 NON_ZERO_DIGIT : [1-9];
 DIGIT : [0-9];
 
-// WS    : [ \t\r\n]+ -> skip ;
-WS    : [ \t]+ -> skip;
-NL : [\r\n]+;
-
-
-fragment VALID_ID_START
- : '_'
- | [A-Z]
- | [a-z];
-
-fragment VALID_ID_CONTINUE
- : VALID_ID_START
- | [0-9];
- 
-ASSIGN : '=';
-EQUALS : '==';
-NOT_EQUALS : '/=';
-
-POWER : '^';
-ADD : '+';
-SUBTRACT : '-';
+OR : '||';
+AND : '&&';
+EQ : '==';
+NEQ : '!=';
+GT : '>';
+LT : '<';
+GTEQ : '>=';
+LTEQ : '<=';
+PLUS : '+';
+MINUS : '-';
+MULT : '*';
 DIV : '/';
-MULTIPLY : '*';
-LESS_THAN : '<';
-GREATER_THAN : '>';
-LESS_THAN_OR_EQUAL : '<=';
-GREATER_THAN_OR_EQUAL : '>=';
-LEFT_BRACKET : '(';
-RIGHT_BRACKET : ')';
-INCREMENT : '++';
-DECREMENT : '--';
+MOD : '%';
+POW : '^';
+NOT : '!';
 
 
-OUTPUT : 'WYPISZ';
+ASSIGN : '=';
+OPAR : '(';
+CPAR : ')';
+OBRACE : '{';
+CBRACE : '}';
+OSQBRACE : '[';
+CSQBRACE : ']';
+
+
+COMMENT
+ : '??' ~[\r\n]* -> skip
+ ;
+SEP : ';';
+WS : [ \t\r\n] -> skip;
+
+OTHER
+ : . 
+ ;
