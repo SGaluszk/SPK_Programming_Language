@@ -1,11 +1,23 @@
-CALKOWITA   x   =   2
-CALKOWITA   x2   =   22
-ULAMKOWA ulamek = 1.2
+CALKOWITA   x   =   2;
+CALKOWITA   x2   =   22;
+ULAMKOWA ulamek = 1.2;
 
 
 
-ULAMKOWA ulamek2 = 0.1234 ?? jeden komentarz
-??   as
-LISTA l = [ 1 2   3 4 5  6 9]
+ULAMKOWA ulamek2 = 0.1234; ?? jeden komentarz
+CALKOWITA   x3   =   221;
+?? drugi komentaarz
 
-JEZELI x < 2 TO CALKOWITA x2 = 2
+LISTA l = [ 1 2   3 4 5  6 9];
+CALKOWITA   x5   =   221123;
+
+JEZELI x < 2 TO { 
+    CALKOWITA x10 = 2; 
+}
+
+JEZELI x < 2 TO { 
+    CALKOWITA x13 = 2;
+    CALKOWITA x14 = 2; 
+}
+
+CALKOWITA   x4   =   221123;
