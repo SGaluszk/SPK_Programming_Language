@@ -11,9 +11,9 @@ Do dyspozycji użytkownika będzie aplikacja okienkowa z polem tekstowym do wpis
 ### Przykłady konstrukcji w języku
 - definicja zmiennych
  ```sh
-CAŁKOWITA x = 5
-NAPIS n = “Przykładowy tekst”
-LISTA l = [1 2 3 4 5]
+CAŁKOWITA x = 5;
+NAPIS n = “Przykładowy tekst”;
+LISTA l = [1 2 3 4 5];
 ```
 - operatory logiczne i arytmetyczne
  ```sh
@@ -21,25 +21,28 @@ LISTA l = [1 2 3 4 5]
 ```
 - instrukcje warunkowe
  ```sh
-JEŻELI x < 3 TO x++ INACZEJ x = 1
+JEŻELI x < 3 TO x++ INACZEJ x = 1;
 ```
 - pętle
  ```sh
-DOPÓKI x > 0 TO {WYPISZ “x wynosi” + X}
-DLA i Z [OD 1 DO 9] ZRÓB …
+DOPÓKI x > 0 TO {
+WYPISZ “x wynosi” + X
+}
+
+DLA i W [1 2 3 4] { ... }
 ```
 - wypisywanie/wpisywanie danych
  ```sh
-WYPISZ “Witaj świecie!”
-WPISZ zmienna_do_wpisania
+WYPISZ “Witaj świecie!”;
+WPISZ zmienna_do_wpisania;
 ```
 - konkatenacja napisów
  ```sh
-“Ala ” … “ ma kota”
-“Pora” … “ na csa”
+“Ala ” … “ ma kota”;
+“Pora” … “ na csa”;
 ```
 
 - deklaracja funkcji
  ```sh
-FUNKCJA fun(CAŁKOWITA x, NAPIS tekst){ ciało funkcji }
+FUNKCJA fun(CAŁKOWITA x, NAPIS tekst){ ... }
 ```
