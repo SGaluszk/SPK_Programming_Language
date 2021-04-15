@@ -1,8 +1,8 @@
-CALKOWITA   x   =   2;
+CALKOWITA   x   =   2.1;
 CALKOWITA   x2   =   22;
 ULAMKOWA ulamek = 1.2;
 
-
+ 
 
 ULAMKOWA ulamek2 = 0.1234; ?? jeden komentarz
 CALKOWITA   x3   =   221;
@@ -18,6 +18,25 @@ JEZELI x < 2 TO {
 JEZELI x < 2 TO { 
     CALKOWITA x13 = 2;
     CALKOWITA x14 = 2; 
+    JEZELI x < 2 TO { 
+        CALKOWITA x13 = 2;
+        CALKOWITA x14 = 2; 
+    }
 }
 
+DOPOKI x > 0 TO {
+    x29 = 2;
+}
+
+DLA i W [1 2 3 4] zmienna = 8;
+
+DLA j W lista {
+    zmienna = 8;
+    CALKOWITA x21 = 2;
+} 
+
+
 CALKOWITA   x4   =   221123;
+
+WYPISZ "zbycholudy";
+WYPISZ x20;
