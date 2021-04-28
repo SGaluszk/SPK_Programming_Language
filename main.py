@@ -6,35 +6,29 @@ from SPKParser import SPKParser
 import sys
 
 class OurListener(SPKListener):
-    data = {}
+    scopes = [{}]
     tmp = None
-
-    def enterProgram(self, ctx):
-        pass
-        #print("SPK: %s" % ctx.accept(SPKVisitor()))
-
-    def exitIf_stat(self, ctx:SPKParser.If_statContext):
-        pass
 
     def exitDeclaration(self, ctx:SPKParser.DeclarationContext): # CALKOWITA x = 2;
         
-        if ctx.VARIABLE_NAME() not in self.data.keys():
-            self.data[str(ctx.VARIABLE_NAME())] = {'type': str(ctx.TYPE_NAME()), 'value': self.tmp}
+        if ctx.VARIABLE_NAME() not in self.scopes[-1].keys():
+            self.scopes[-1][str(ctx.VARIABLE_NAME())] = {'type': str(ctx.TYPE_NAME()), 'value': self.tmp}
             self.tmp = None
         else:
             print('This variable name is already used!')
 
     def exitAssignment(self, ctx:SPKParser.AssignmentContext): # x = 2;
         print(ctx.VARIABLE_NAME())
-        if ctx.VARIABLE_NAME() not in self.data.keys():
-            print('This variable is not declared.')
-        else:
-            self.data[str(ctx.VARIABLE_NAME())]['value'] = self.tmp
-            self.tmp = None
+        exists = False
+        for scope in reversed(self.scopes):
 
-    # def enterExpr(self, ctx:SPKParser.ExprContext):
-    #     if not ctx.expr():
-    #         print(ctx.atom.INTEGER_NUMBER())
+            if str(ctx.VARIABLE_NAME()) in scope.keys():
+                scope[str(ctx.VARIABLE_NAME())]['value'] = self.tmp
+                self.tmp = None
+                exists = True
+                break
+        if not exists:
+            print("Error, you cannot assign value to non-existent variable.")
 
     def enterAtom(self, ctx:SPKParser.AtomContext):
         if ctx.INTEGER_NUMBER():
@@ -42,9 +36,43 @@ class OurListener(SPKListener):
         elif ctx.FLOAT_NUMBER():
             self.tmp = float(str(ctx.FLOAT_NUMBER()[0]))
 
+    def enterBlock(self, ctx:SPKParser.BlockContext):
+        self.scopes.append({})       
 
-def main():
-    data = open('test.txt', 'r').read()
+    def exitBlock(self, ctx:SPKParser.BlockContext):
+        self.scopes.pop(-1) 
+        print("Koniec lokalnego scope'a")
+
+    def enterPrint_(self, ctx:SPKParser.Print_Context):
+        # print(self.scopes)
+        if ctx.printable().VARIABLE_NAME():
+            exists = False
+            for i, scope in enumerate(reversed(self.scopes)):
+
+                if str(ctx.printable().VARIABLE_NAME()) in scope.keys():
+                    value = scope[str(ctx.printable().VARIABLE_NAME())]
+                    exists = True
+                    break
+                    
+            if exists:
+                print(f"PRINT: {value['value']}")
+            else:
+                print("Error, this variable doesn't exist.")
+
+                
+        else:
+            if (ctx.printable().STRING()):
+                print(f"PRINT: {str(ctx.printable().STRING())[1:-1]}")
+
+            elif (ctx.printable().INTEGER_NUMBER()):
+                print(f"PRINT: {ctx.printable().INTEGER_NUMBER()}")
+
+            elif (ctx.printable().FLOAT_NUMBER()):
+                print(f"PRINT: {ctx.printable().FLOAT_NUMBER()}")
+
+def main(filename):
+    name = filename + '.txt'
+    data = open(name, 'r', encoding="UTF-8").read()
     inputStream = InputStream(data)
     lexer = SPKLexer(inputStream)
     stream = CommonTokenStream(lexer)
@@ -53,8 +81,11 @@ def main():
     listener = OurListener()
     walker = ParseTreeWalker()
     walker.walk(listener, tree)
+    f = open( 'scopes.txt', 'w' )
+    f.write(repr(listener.scopes))
+    f.close()
+    print(listener.scopes)
 
-    print(listener.data)
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1])
