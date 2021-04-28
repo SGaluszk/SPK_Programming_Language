@@ -1,6 +1,10 @@
 import tkinter as tk
+import subprocess
+import os
+import ast
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
+filename = ''
 def open_file():
     """Open a file for editing."""
     filepath = askopenfilename(
@@ -9,9 +13,11 @@ def open_file():
     if not filepath:
         return
     txt_edit.delete(1.0, tk.END)
-    with open(filepath, "r") as input_file:
+    with open(filepath, "r",encoding="UTF-8") as input_file:
         text = input_file.read()
         txt_edit.insert(tk.END, text)
+    global filename
+    filename = os.path.splitext(os.path.basename(input_file.name))[0]
     window.title(f"Simple Text Editor - {filepath}")
 
 def save_file():
@@ -22,11 +28,29 @@ def save_file():
     )
     if not filepath:
         return
-    with open(filepath, "w") as output_file:
+    with open(filepath, "w",encoding="UTF-8") as output_file:
         text = txt_edit.get(1.0, tk.END)
         output_file.write(text)
     window.title(f"Simple Text Editor - {filepath}")
 
+def run_file():
+    
+    proc = subprocess.Popen('python main.py '+filename, stdout=subprocess.PIPE,shell=True, universal_newlines=True)
+    output = proc.stdout.read()
+    #print(main.listener.scopes)
+    txt_output.delete(1.0,tk.END)
+    txt_output.insert(tk.END, output)
+    f = open("scopes.txt", "r")
+    
+    
+    scopes = f.read()
+    txt_data.delete(1.0,tk.END)
+    txt_data.insert(tk.END,scopes)
+    f.close()
+    #sc = ast.literal_eval(scopes)
+    #print(sc)
+
+    
 window = tk.Tk()
 window.geometry("1100x800")
 
@@ -44,7 +68,7 @@ txt_data = tk.Text(window)
 fr_buttons = tk.Frame(window, relief=tk.RAISED, bd=2)
 btn_open = tk.Button(fr_buttons, text="Open", command=open_file)
 btn_save = tk.Button(fr_buttons, text="Save As...", command=save_file)
-btn_run = tk.Button(fr_buttons, text="Run..")
+btn_run = tk.Button(fr_buttons, text="Run..", command=run_file)
 
 
 btn_open.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
@@ -58,3 +82,4 @@ txt_data.grid(row=0, column=3, sticky="nsew")
 
 
 window.mainloop()
+os.remove("scopes.txt") 
