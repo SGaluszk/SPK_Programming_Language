@@ -1,0 +1,16 @@
+FUNKCJA f1(CAŁKOWITA x, UŁAMKOWA X2){
+    WYPISZ x;
+
+}
+
+FUNKCJA f2(NAPIS n){
+    WYPISZ n;
+    JEŻELI n > 0 TO {
+        x29 = 2;
+    }
+}
+
+    
+CAŁKOWITA  x2   =   22.23;
+WYPISZ x2;
+UŁAMKOWA ulamek = 1.2;

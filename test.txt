@@ -1,30 +1,30 @@
-CALKOWITA   x   =   2.1;
-CALKOWITA   x2   =   22;
-ULAMKOWA ulamek = 1.2;
-
- 
-
-ULAMKOWA ulamek2 = 0.1234; ?? jeden komentarz
-CALKOWITA   x3   =   221;
+CAŁKOWITA   x   =   (2);
+CAŁKOWITA  x2   =   22;
+UŁAMKOWA ulamek = 1.2;
+UŁAMKOWA ulamek12 = 1.43;
+WYPISZ ulamek12;
+WYPISZ ulamek;
+UŁAMKOWA ulamek2 = 0.1234; ?? jeden komentarz
+CAŁKOWITA   x3   =   221;
 ?? drugi komentaarz
 
 LISTA l = [ 1 2   3 4 5  6 9];
-CALKOWITA   x5   =   221123;
+CAŁKOWITA   x3   =   221123;
 
-JEZELI x < 2 TO { 
-    CALKOWITA x10 = 2; 
+JEŻELI x < 2 TO { 
+    CAŁKOWITA x10 = 2; 
 }
 
-JEZELI x < 2 TO { 
-    CALKOWITA x13 = 2;
-    CALKOWITA x14 = 2; 
-    JEZELI x < 2 TO { 
-        CALKOWITA x13 = 2;
-        CALKOWITA x14 = 2; 
+JEŻELI x < 2 TO { 
+    CAŁKOWITA x13 = 2;
+    CAŁKOWITA x14 = 2; 
+    JEŻELI x < 2 TO { 
+        CAŁKOWITA x13 = 2;
+        CAŁKOWITA x14 = 2; 
     }
 }
 
-DOPOKI x > 0 TO {
+JEŻELI x > 0 TO {
     x29 = 2;
 }
 
@@ -32,11 +32,24 @@ DLA i W [1 2 3 4] zmienna = 8;
 
 DLA j W lista {
     zmienna = 8;
-    CALKOWITA x21 = 2;
+    CAŁKOWITA x21 = 2;
 } 
 
 
-CALKOWITA   x4   =   221123;
+CAŁKOWITA   x4   =   221123;
 
-WYPISZ "zbycholudy";
+WYPISZ "zbychoŁudy";
 WYPISZ x20;
+WYPISZ x2;
+
+CAŁKOWITA scopetest = 1;
+WYPISZ scopetest;
+
+JEŻELI x < 2 TO {
+    CAŁKOWITA scopetest = 2;
+    WYPISZ scopetest;
+}
+WYPISZ scopetest;
+
+
+
