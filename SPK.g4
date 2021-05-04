@@ -1,9 +1,9 @@
 grammar SPK;
 
-program : bigStmt* EOF;
+program : function_* bigStmt* EOF;
 
 
-bigStmt : (if_stat | while_stat | for_loop | declaration | assignment | print);
+bigStmt : (if_stat | while_stat | for_loop | declaration | assignment | print_ | function_exec);
 
 // if_ : IF_ condition_block THEN_ block;
 if_stat : IF_ condition_block (ELSE IF_ condition_block)* (ELSE block)?;
@@ -11,26 +11,36 @@ while_stat : WHILE expr THEN_ block;
 
 for_loop : FOR VARIABLE_NAME IN iterable block;
 
-print : PRINT_ ( STRING | VARIABLE_NAME | INTEGER_NUMBER | FLOAT_NUMBER) SEP;
+print_ : PRINT_ printable SEP;
+
+printable : STRING | VARIABLE_NAME | INTEGER_NUMBER | FLOAT_NUMBER | BOOL_;
 
 condition_block : expr THEN_ block;
 
+
 block : OBRACE block CBRACE | OBRACE bigStmt+ CBRACE | bigStmt;
 
+function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR OBRACE bigStmt+ CBRACE;
 
+function_exec : VARIABLE_NAME OPAR arguments_exec CPAR;
+
+arguments : (TYPE_NAME VARIABLE_NAME ',')* TYPE_NAME VARIABLE_NAME;
+arguments_exec : (expr ',')* expr;
 
 declaration : TYPE_NAME VARIABLE_NAME ASSIGN expr SEP;
 assignment : VARIABLE_NAME ASSIGN expr SEP;
 
-TYPE_NAME : (INT | LIST | FLOATING | STRING_ );
-INT : 'CALKOWITA' ;
+TYPE_NAME : (INT | LIST | FLOATING | STRING_ | BOOL_ );
+BOOL_ : 'LOGICZNA';
+FUN_ : 'FUNKCJA';
+INT : 'CA\u0141KOWITA' ;
 LIST : 'LISTA';
-FLOATING : 'ULAMKOWA';
+FLOATING : 'U\u0141AMKOWA';
 STRING_ : 'NAPIS';
-IF_ : 'JEZELI';
+IF_ : 'JE\u017BELI';
 THEN_ : 'TO';
 ELSE : 'INACZEJ';
-WHILE: 'DOPOKI';
+WHILE: 'DOP\u00D3KI';
 FOR: 'DLA';
 IN: 'W';
 PRINT_: 'WYPISZ';
@@ -50,9 +60,11 @@ expr
 
 atom
  : OPAR expr CPAR 
- | (INTEGER_NUMBER | FLOAT_NUMBER)  
+ | INTEGER_NUMBER 
+ | FLOAT_NUMBER
  | VARIABLE_NAME            
  | STRING  
+ | BOOL_
  | OSQBRACE (INTEGER_NUMBER | FLOAT_NUMBER)* CSQBRACE     
  ;
 

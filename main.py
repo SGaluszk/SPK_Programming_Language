@@ -5,13 +5,29 @@ from SPKListener import SPKListener
 from SPKParser import SPKParser
 import sys
 
+class FirstStageListener(SPKListener):
+    functions = []
+    def enterFunction_(self, ctx:SPKParser.Function_Context):
+        # zapisz całe info o funkcji w pamieci
+        pass
+
 class OurListener(SPKListener):
     scopes = [{}]
     tmp = None
 
+    def enterFunction_(self, ctx:SPKParser.Function_Context):
+        # self.exitFunction_(ctx)
+        return None
+
+    # Exit a parse tree produced by SPKParser#function_.
+    def exitFunction_(self, ctx:SPKParser.Function_Context):
+        return None
+
+
+
     def exitDeclaration(self, ctx:SPKParser.DeclarationContext): # CALKOWITA x = 2;
         
-        if ctx.VARIABLE_NAME() not in self.scopes[-1].keys():
+        if ctx.VARIABLE_NAME() not in self.scopes[-1].keys(): # ZROBIĆ KONTROLE TYPÓW
             self.scopes[-1][str(ctx.VARIABLE_NAME())] = {'type': str(ctx.TYPE_NAME()), 'value': self.tmp}
             self.tmp = None
         else:
@@ -22,7 +38,7 @@ class OurListener(SPKListener):
         exists = False
         for scope in reversed(self.scopes):
 
-            if str(ctx.VARIABLE_NAME()) in scope.keys():
+            if str(ctx.VARIABLE_NAME()) in scope.keys(): # ZROBIĆ KONTROLE TYPÓW
                 scope[str(ctx.VARIABLE_NAME())]['value'] = self.tmp
                 self.tmp = None
                 exists = True
@@ -84,7 +100,7 @@ def main(filename):
     f = open( 'scopes.txt', 'w' )
     f.write(repr(listener.scopes))
     f.close()
-    print(listener.scopes)
+    #print(listener.scopes)
 
 
 if __name__ == '__main__':

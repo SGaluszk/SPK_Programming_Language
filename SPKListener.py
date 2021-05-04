@@ -53,12 +53,21 @@ class SPKListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SPKParser#print.
-    def enterPrint(self, ctx:SPKParser.PrintContext):
+    # Enter a parse tree produced by SPKParser#print_.
+    def enterPrint_(self, ctx:SPKParser.Print_Context):
         pass
 
-    # Exit a parse tree produced by SPKParser#print.
-    def exitPrint(self, ctx:SPKParser.PrintContext):
+    # Exit a parse tree produced by SPKParser#print_.
+    def exitPrint_(self, ctx:SPKParser.Print_Context):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#printable.
+    def enterPrintable(self, ctx:SPKParser.PrintableContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#printable.
+    def exitPrintable(self, ctx:SPKParser.PrintableContext):
         pass
 
 
@@ -77,6 +86,42 @@ class SPKListener(ParseTreeListener):
 
     # Exit a parse tree produced by SPKParser#block.
     def exitBlock(self, ctx:SPKParser.BlockContext):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#function_.
+    def enterFunction_(self, ctx:SPKParser.Function_Context):
+        pass
+
+    # Exit a parse tree produced by SPKParser#function_.
+    def exitFunction_(self, ctx:SPKParser.Function_Context):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#function_exec.
+    def enterFunction_exec(self, ctx:SPKParser.Function_execContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#function_exec.
+    def exitFunction_exec(self, ctx:SPKParser.Function_execContext):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#arguments.
+    def enterArguments(self, ctx:SPKParser.ArgumentsContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#arguments.
+    def exitArguments(self, ctx:SPKParser.ArgumentsContext):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#arguments_exec.
+    def enterArguments_exec(self, ctx:SPKParser.Arguments_execContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#arguments_exec.
+    def exitArguments_exec(self, ctx:SPKParser.Arguments_execContext):
         pass
 
 

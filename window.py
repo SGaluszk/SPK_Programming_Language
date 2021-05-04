@@ -18,7 +18,7 @@ def open_file():
         txt_edit.insert(tk.END, text)
     global filename
     filename = os.path.splitext(os.path.basename(input_file.name))[0]
-    window.title(f"Simple Text Editor - {filepath}")
+    window.title(f"Edytor - {filepath}")
 
 def save_file():
     """Save the current file as a new file."""
@@ -31,13 +31,12 @@ def save_file():
     with open(filepath, "w",encoding="UTF-8") as output_file:
         text = txt_edit.get(1.0, tk.END)
         output_file.write(text)
-    window.title(f"Simple Text Editor - {filepath}")
+    window.title(f"Edytor - {filepath}")
 
 def run_file():
     
     proc = subprocess.Popen('python main.py '+filename, stdout=subprocess.PIPE,shell=True, universal_newlines=True)
     output = proc.stdout.read()
-    #print(main.listener.scopes)
     txt_output.delete(1.0,tk.END)
     txt_output.insert(tk.END, output)
     f = open("scopes.txt", "r")
