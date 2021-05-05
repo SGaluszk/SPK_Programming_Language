@@ -877,7 +877,6 @@ class SPKParser ( Parser ):
         def arguments(self):
             return self.getTypedRuleContext(SPKParser.ArgumentsContext,0)
 
-
         def CPAR(self):
             return self.getToken(SPKParser.CPAR, 0)
 

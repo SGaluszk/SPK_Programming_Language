@@ -20,9 +20,9 @@ condition_block : expr THEN_ block;
 
 block : OBRACE block CBRACE | OBRACE bigStmt+ CBRACE | bigStmt;
 
-function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR OBRACE bigStmt+ CBRACE;
+function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR OBRACE bigStmt+ CBRACE SEP;
 
-function_exec : VARIABLE_NAME OPAR arguments_exec CPAR;
+function_exec : VARIABLE_NAME OPAR arguments_exec CPAR SEP;
 
 arguments : (TYPE_NAME VARIABLE_NAME ',')* TYPE_NAME VARIABLE_NAME;
 arguments_exec : (expr ',')* expr;

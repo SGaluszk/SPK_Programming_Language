@@ -1,0 +1,1 @@
+[{'x1': {'type': 'CA£KOWITA', 'value': 2}, 'x2': {'type': 'CA£KOWITA', 'value': 8}, 'x3': {'type': 'CA£KOWITA', 'value': 1}, 'x4': {'type': 'CA£KOWITA', 'value': 4}}]
