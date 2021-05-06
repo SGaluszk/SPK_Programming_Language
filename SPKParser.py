@@ -11,8 +11,8 @@ else:
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\60")
-        buf.write("\u00e1\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\61")
+        buf.write("\u00e4\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
         buf.write("\3\2\7\2(\n\2\f\2\16\2+\13\2\3\2\7\2.\n\2\f\2\16\2\61")
@@ -22,88 +22,90 @@ def serializedATN():
         buf.write("\7\3\7\3\7\3\b\3\b\3\t\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n")
         buf.write("\3\n\6\ng\n\n\r\n\16\nh\3\n\3\n\3\n\5\nn\n\n\3\13\3\13")
         buf.write("\3\13\3\13\3\13\3\13\3\13\6\13w\n\13\r\13\16\13x\3\13")
-        buf.write("\3\13\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3\r\7\r\u0085\n\r\f")
-        buf.write("\r\16\r\u0088\13\r\3\r\3\r\3\r\3\16\3\16\3\16\7\16\u0090")
-        buf.write("\n\16\f\16\16\16\u0093\13\16\3\16\3\16\3\17\3\17\3\17")
-        buf.write("\3\17\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\21\3\21\3\21")
-        buf.write("\3\21\3\21\3\21\5\21\u00a8\n\21\3\21\3\21\3\21\3\21\3")
+        buf.write("\3\13\3\f\3\f\3\f\3\f\3\f\3\f\3\r\3\r\3\r\7\r\u0086\n")
+        buf.write("\r\f\r\16\r\u0089\13\r\3\r\3\r\3\r\3\16\3\16\3\16\7\16")
+        buf.write("\u0091\n\16\f\16\16\16\u0094\13\16\3\16\3\16\3\17\3\17")
+        buf.write("\3\17\3\17\3\17\3\17\3\20\3\20\3\20\3\20\3\20\3\21\3\21")
+        buf.write("\3\21\3\21\3\21\3\21\5\21\u00a9\n\21\3\21\3\21\3\21\3")
         buf.write("\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21\3\21")
-        buf.write("\3\21\3\21\3\21\3\21\3\21\3\21\7\21\u00bf\n\21\f\21\16")
-        buf.write("\21\u00c2\13\21\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22")
-        buf.write("\3\22\7\22\u00cd\n\22\f\22\16\22\u00d0\13\22\3\22\5\22")
-        buf.write("\u00d3\n\22\3\23\3\23\7\23\u00d7\n\23\f\23\16\23\u00da")
-        buf.write("\13\23\3\23\3\23\3\23\5\23\u00df\n\23\3\23\2\3 \24\2\4")
-        buf.write("\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$\2\b\3\2\21\24")
-        buf.write("\3\2!#\3\2\37 \3\2\33\36\3\2\31\32\3\2\22\23\2\u00ef\2")
-        buf.write(")\3\2\2\2\4;\3\2\2\2\6=\3\2\2\2\bK\3\2\2\2\nP\3\2\2\2")
-        buf.write("\fV\3\2\2\2\16Z\3\2\2\2\20\\\3\2\2\2\22m\3\2\2\2\24o\3")
-        buf.write("\2\2\2\26|\3\2\2\2\30\u0086\3\2\2\2\32\u0091\3\2\2\2\34")
-        buf.write("\u0096\3\2\2\2\36\u009c\3\2\2\2 \u00a7\3\2\2\2\"\u00d2")
-        buf.write("\3\2\2\2$\u00de\3\2\2\2&(\5\24\13\2\'&\3\2\2\2(+\3\2\2")
-        buf.write("\2)\'\3\2\2\2)*\3\2\2\2*/\3\2\2\2+)\3\2\2\2,.\5\4\3\2")
-        buf.write("-,\3\2\2\2.\61\3\2\2\2/-\3\2\2\2/\60\3\2\2\2\60\62\3\2")
-        buf.write("\2\2\61/\3\2\2\2\62\63\7\2\2\3\63\3\3\2\2\2\64<\5\6\4")
-        buf.write("\2\65<\5\b\5\2\66<\5\n\6\2\67<\5\34\17\28<\5\36\20\29")
-        buf.write("<\5\f\7\2:<\5\26\f\2;\64\3\2\2\2;\65\3\2\2\2;\66\3\2\2")
-        buf.write("\2;\67\3\2\2\2;8\3\2\2\2;9\3\2\2\2;:\3\2\2\2<\5\3\2\2")
-        buf.write("\2=>\7\n\2\2>D\5\20\t\2?@\7\f\2\2@A\7\n\2\2AC\5\20\t\2")
-        buf.write("B?\3\2\2\2CF\3\2\2\2DB\3\2\2\2DE\3\2\2\2EI\3\2\2\2FD\3")
-        buf.write("\2\2\2GH\7\f\2\2HJ\5\22\n\2IG\3\2\2\2IJ\3\2\2\2J\7\3\2")
-        buf.write("\2\2KL\7\r\2\2LM\5 \21\2MN\7\13\2\2NO\5\22\n\2O\t\3\2")
-        buf.write("\2\2PQ\7\16\2\2QR\7\21\2\2RS\7\17\2\2ST\5$\23\2TU\5\22")
-        buf.write("\n\2U\13\3\2\2\2VW\7\20\2\2WX\5\16\b\2XY\7.\2\2Y\r\3\2")
-        buf.write("\2\2Z[\t\2\2\2[\17\3\2\2\2\\]\5 \21\2]^\7\13\2\2^_\5\22")
-        buf.write("\n\2_\21\3\2\2\2`a\7)\2\2ab\5\22\n\2bc\7*\2\2cn\3\2\2")
-        buf.write("\2df\7)\2\2eg\5\4\3\2fe\3\2\2\2gh\3\2\2\2hf\3\2\2\2hi")
-        buf.write("\3\2\2\2ij\3\2\2\2jk\7*\2\2kn\3\2\2\2ln\5\4\3\2m`\3\2")
-        buf.write("\2\2md\3\2\2\2ml\3\2\2\2n\23\3\2\2\2op\7\5\2\2pq\7\21")
-        buf.write("\2\2qr\7\'\2\2rs\5\30\r\2st\7(\2\2tv\7)\2\2uw\5\4\3\2")
-        buf.write("vu\3\2\2\2wx\3\2\2\2xv\3\2\2\2xy\3\2\2\2yz\3\2\2\2z{\7")
-        buf.write("*\2\2{\25\3\2\2\2|}\7\21\2\2}~\7\'\2\2~\177\5\32\16\2")
-        buf.write("\177\u0080\7(\2\2\u0080\27\3\2\2\2\u0081\u0082\7\4\2\2")
-        buf.write("\u0082\u0083\7\21\2\2\u0083\u0085\7\3\2\2\u0084\u0081")
-        buf.write("\3\2\2\2\u0085\u0088\3\2\2\2\u0086\u0084\3\2\2\2\u0086")
-        buf.write("\u0087\3\2\2\2\u0087\u0089\3\2\2\2\u0088\u0086\3\2\2\2")
-        buf.write("\u0089\u008a\7\4\2\2\u008a\u008b\7\21\2\2\u008b\31\3\2")
-        buf.write("\2\2\u008c\u008d\5 \21\2\u008d\u008e\7\3\2\2\u008e\u0090")
-        buf.write("\3\2\2\2\u008f\u008c\3\2\2\2\u0090\u0093\3\2\2\2\u0091")
-        buf.write("\u008f\3\2\2\2\u0091\u0092\3\2\2\2\u0092\u0094\3\2\2\2")
-        buf.write("\u0093\u0091\3\2\2\2\u0094\u0095\5 \21\2\u0095\33\3\2")
-        buf.write("\2\2\u0096\u0097\7\4\2\2\u0097\u0098\7\21\2\2\u0098\u0099")
-        buf.write("\7&\2\2\u0099\u009a\5 \21\2\u009a\u009b\7.\2\2\u009b\35")
-        buf.write("\3\2\2\2\u009c\u009d\7\21\2\2\u009d\u009e\7&\2\2\u009e")
-        buf.write("\u009f\5 \21\2\u009f\u00a0\7.\2\2\u00a0\37\3\2\2\2\u00a1")
-        buf.write("\u00a2\b\21\1\2\u00a2\u00a3\7 \2\2\u00a3\u00a8\5 \21\13")
-        buf.write("\u00a4\u00a5\7%\2\2\u00a5\u00a8\5 \21\n\u00a6\u00a8\5")
-        buf.write("\"\22\2\u00a7\u00a1\3\2\2\2\u00a7\u00a4\3\2\2\2\u00a7")
-        buf.write("\u00a6\3\2\2\2\u00a8\u00c0\3\2\2\2\u00a9\u00aa\f\f\2\2")
-        buf.write("\u00aa\u00ab\7$\2\2\u00ab\u00bf\5 \21\r\u00ac\u00ad\f")
-        buf.write("\t\2\2\u00ad\u00ae\t\3\2\2\u00ae\u00bf\5 \21\n\u00af\u00b0")
-        buf.write("\f\b\2\2\u00b0\u00b1\t\4\2\2\u00b1\u00bf\5 \21\t\u00b2")
-        buf.write("\u00b3\f\7\2\2\u00b3\u00b4\t\5\2\2\u00b4\u00bf\5 \21\b")
-        buf.write("\u00b5\u00b6\f\6\2\2\u00b6\u00b7\t\6\2\2\u00b7\u00bf\5")
-        buf.write(" \21\7\u00b8\u00b9\f\5\2\2\u00b9\u00ba\7\30\2\2\u00ba")
-        buf.write("\u00bf\5 \21\6\u00bb\u00bc\f\4\2\2\u00bc\u00bd\7\27\2")
-        buf.write("\2\u00bd\u00bf\5 \21\5\u00be\u00a9\3\2\2\2\u00be\u00ac")
-        buf.write("\3\2\2\2\u00be\u00af\3\2\2\2\u00be\u00b2\3\2\2\2\u00be")
-        buf.write("\u00b5\3\2\2\2\u00be\u00b8\3\2\2\2\u00be\u00bb\3\2\2\2")
-        buf.write("\u00bf\u00c2\3\2\2\2\u00c0\u00be\3\2\2\2\u00c0\u00c1\3")
-        buf.write("\2\2\2\u00c1!\3\2\2\2\u00c2\u00c0\3\2\2\2\u00c3\u00c4")
-        buf.write("\7\'\2\2\u00c4\u00c5\5 \21\2\u00c5\u00c6\7(\2\2\u00c6")
-        buf.write("\u00d3\3\2\2\2\u00c7\u00d3\t\7\2\2\u00c8\u00d3\7\21\2")
-        buf.write("\2\u00c9\u00d3\7\24\2\2\u00ca\u00ce\7+\2\2\u00cb\u00cd")
-        buf.write("\t\7\2\2\u00cc\u00cb\3\2\2\2\u00cd\u00d0\3\2\2\2\u00ce")
-        buf.write("\u00cc\3\2\2\2\u00ce\u00cf\3\2\2\2\u00cf\u00d1\3\2\2\2")
-        buf.write("\u00d0\u00ce\3\2\2\2\u00d1\u00d3\7,\2\2\u00d2\u00c3\3")
-        buf.write("\2\2\2\u00d2\u00c7\3\2\2\2\u00d2\u00c8\3\2\2\2\u00d2\u00c9")
-        buf.write("\3\2\2\2\u00d2\u00ca\3\2\2\2\u00d3#\3\2\2\2\u00d4\u00d8")
-        buf.write("\7+\2\2\u00d5\u00d7\t\7\2\2\u00d6\u00d5\3\2\2\2\u00d7")
-        buf.write("\u00da\3\2\2\2\u00d8\u00d6\3\2\2\2\u00d8\u00d9\3\2\2\2")
-        buf.write("\u00d9\u00db\3\2\2\2\u00da\u00d8\3\2\2\2\u00db\u00df\7")
-        buf.write(",\2\2\u00dc\u00df\7\24\2\2\u00dd\u00df\7\21\2\2\u00de")
-        buf.write("\u00d4\3\2\2\2\u00de\u00dc\3\2\2\2\u00de\u00dd\3\2\2\2")
-        buf.write("\u00df%\3\2\2\2\23)/;DIhmx\u0086\u0091\u00a7\u00be\u00c0")
-        buf.write("\u00ce\u00d2\u00d8\u00de")
+        buf.write("\3\21\3\21\3\21\3\21\3\21\3\21\3\21\7\21\u00c0\n\21\f")
+        buf.write("\21\16\21\u00c3\13\21\3\22\3\22\3\22\3\22\3\22\3\22\3")
+        buf.write("\22\3\22\3\22\3\22\3\22\7\22\u00d0\n\22\f\22\16\22\u00d3")
+        buf.write("\13\22\3\22\5\22\u00d6\n\22\3\23\3\23\7\23\u00da\n\23")
+        buf.write("\f\23\16\23\u00dd\13\23\3\23\3\23\3\23\5\23\u00e2\n\23")
+        buf.write("\3\23\2\3 \24\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 ")
+        buf.write("\"$\2\b\4\2\5\5\22\25\3\2\"$\3\2 !\3\2\34\37\3\2\32\33")
+        buf.write("\3\2\23\24\2\u00f4\2)\3\2\2\2\4;\3\2\2\2\6=\3\2\2\2\b")
+        buf.write("K\3\2\2\2\nP\3\2\2\2\fV\3\2\2\2\16Z\3\2\2\2\20\\\3\2\2")
+        buf.write("\2\22m\3\2\2\2\24o\3\2\2\2\26|\3\2\2\2\30\u0087\3\2\2")
+        buf.write("\2\32\u0092\3\2\2\2\34\u0097\3\2\2\2\36\u009d\3\2\2\2")
+        buf.write(" \u00a8\3\2\2\2\"\u00d5\3\2\2\2$\u00e1\3\2\2\2&(\5\24")
+        buf.write("\13\2\'&\3\2\2\2(+\3\2\2\2)\'\3\2\2\2)*\3\2\2\2*/\3\2")
+        buf.write("\2\2+)\3\2\2\2,.\5\4\3\2-,\3\2\2\2.\61\3\2\2\2/-\3\2\2")
+        buf.write("\2/\60\3\2\2\2\60\62\3\2\2\2\61/\3\2\2\2\62\63\7\2\2\3")
+        buf.write("\63\3\3\2\2\2\64<\5\6\4\2\65<\5\b\5\2\66<\5\n\6\2\67<")
+        buf.write("\5\34\17\28<\5\36\20\29<\5\f\7\2:<\5\26\f\2;\64\3\2\2")
+        buf.write("\2;\65\3\2\2\2;\66\3\2\2\2;\67\3\2\2\2;8\3\2\2\2;9\3\2")
+        buf.write("\2\2;:\3\2\2\2<\5\3\2\2\2=>\7\13\2\2>D\5\20\t\2?@\7\r")
+        buf.write("\2\2@A\7\13\2\2AC\5\20\t\2B?\3\2\2\2CF\3\2\2\2DB\3\2\2")
+        buf.write("\2DE\3\2\2\2EI\3\2\2\2FD\3\2\2\2GH\7\r\2\2HJ\5\22\n\2")
+        buf.write("IG\3\2\2\2IJ\3\2\2\2J\7\3\2\2\2KL\7\16\2\2LM\5 \21\2M")
+        buf.write("N\7\f\2\2NO\5\22\n\2O\t\3\2\2\2PQ\7\17\2\2QR\7\22\2\2")
+        buf.write("RS\7\20\2\2ST\5$\23\2TU\5\22\n\2U\13\3\2\2\2VW\7\21\2")
+        buf.write("\2WX\5\16\b\2XY\7/\2\2Y\r\3\2\2\2Z[\t\2\2\2[\17\3\2\2")
+        buf.write("\2\\]\5 \21\2]^\7\f\2\2^_\5\22\n\2_\21\3\2\2\2`a\7*\2")
+        buf.write("\2ab\5\22\n\2bc\7+\2\2cn\3\2\2\2df\7*\2\2eg\5\4\3\2fe")
+        buf.write("\3\2\2\2gh\3\2\2\2hf\3\2\2\2hi\3\2\2\2ij\3\2\2\2jk\7+")
+        buf.write("\2\2kn\3\2\2\2ln\5\4\3\2m`\3\2\2\2md\3\2\2\2ml\3\2\2\2")
+        buf.write("n\23\3\2\2\2op\7\6\2\2pq\7\22\2\2qr\7(\2\2rs\5\30\r\2")
+        buf.write("st\7)\2\2tv\7*\2\2uw\5\4\3\2vu\3\2\2\2wx\3\2\2\2xv\3\2")
+        buf.write("\2\2xy\3\2\2\2yz\3\2\2\2z{\7+\2\2{\25\3\2\2\2|}\7\22\2")
+        buf.write("\2}~\7(\2\2~\177\5\32\16\2\177\u0080\7)\2\2\u0080\u0081")
+        buf.write("\7/\2\2\u0081\27\3\2\2\2\u0082\u0083\7\4\2\2\u0083\u0084")
+        buf.write("\7\22\2\2\u0084\u0086\7\3\2\2\u0085\u0082\3\2\2\2\u0086")
+        buf.write("\u0089\3\2\2\2\u0087\u0085\3\2\2\2\u0087\u0088\3\2\2\2")
+        buf.write("\u0088\u008a\3\2\2\2\u0089\u0087\3\2\2\2\u008a\u008b\7")
+        buf.write("\4\2\2\u008b\u008c\7\22\2\2\u008c\31\3\2\2\2\u008d\u008e")
+        buf.write("\5 \21\2\u008e\u008f\7\3\2\2\u008f\u0091\3\2\2\2\u0090")
+        buf.write("\u008d\3\2\2\2\u0091\u0094\3\2\2\2\u0092\u0090\3\2\2\2")
+        buf.write("\u0092\u0093\3\2\2\2\u0093\u0095\3\2\2\2\u0094\u0092\3")
+        buf.write("\2\2\2\u0095\u0096\5 \21\2\u0096\33\3\2\2\2\u0097\u0098")
+        buf.write("\7\4\2\2\u0098\u0099\7\22\2\2\u0099\u009a\7\'\2\2\u009a")
+        buf.write("\u009b\5 \21\2\u009b\u009c\7/\2\2\u009c\35\3\2\2\2\u009d")
+        buf.write("\u009e\7\22\2\2\u009e\u009f\7\'\2\2\u009f\u00a0\5 \21")
+        buf.write("\2\u00a0\u00a1\7/\2\2\u00a1\37\3\2\2\2\u00a2\u00a3\b\21")
+        buf.write("\1\2\u00a3\u00a4\7!\2\2\u00a4\u00a9\5 \21\13\u00a5\u00a6")
+        buf.write("\7&\2\2\u00a6\u00a9\5 \21\n\u00a7\u00a9\5\"\22\2\u00a8")
+        buf.write("\u00a2\3\2\2\2\u00a8\u00a5\3\2\2\2\u00a8\u00a7\3\2\2\2")
+        buf.write("\u00a9\u00c1\3\2\2\2\u00aa\u00ab\f\f\2\2\u00ab\u00ac\7")
+        buf.write("%\2\2\u00ac\u00c0\5 \21\r\u00ad\u00ae\f\t\2\2\u00ae\u00af")
+        buf.write("\t\3\2\2\u00af\u00c0\5 \21\n\u00b0\u00b1\f\b\2\2\u00b1")
+        buf.write("\u00b2\t\4\2\2\u00b2\u00c0\5 \21\t\u00b3\u00b4\f\7\2\2")
+        buf.write("\u00b4\u00b5\t\5\2\2\u00b5\u00c0\5 \21\b\u00b6\u00b7\f")
+        buf.write("\6\2\2\u00b7\u00b8\t\6\2\2\u00b8\u00c0\5 \21\7\u00b9\u00ba")
+        buf.write("\f\5\2\2\u00ba\u00bb\7\31\2\2\u00bb\u00c0\5 \21\6\u00bc")
+        buf.write("\u00bd\f\4\2\2\u00bd\u00be\7\30\2\2\u00be\u00c0\5 \21")
+        buf.write("\5\u00bf\u00aa\3\2\2\2\u00bf\u00ad\3\2\2\2\u00bf\u00b0")
+        buf.write("\3\2\2\2\u00bf\u00b3\3\2\2\2\u00bf\u00b6\3\2\2\2\u00bf")
+        buf.write("\u00b9\3\2\2\2\u00bf\u00bc\3\2\2\2\u00c0\u00c3\3\2\2\2")
+        buf.write("\u00c1\u00bf\3\2\2\2\u00c1\u00c2\3\2\2\2\u00c2!\3\2\2")
+        buf.write("\2\u00c3\u00c1\3\2\2\2\u00c4\u00c5\7(\2\2\u00c5\u00c6")
+        buf.write("\5 \21\2\u00c6\u00c7\7)\2\2\u00c7\u00d6\3\2\2\2\u00c8")
+        buf.write("\u00d6\7\23\2\2\u00c9\u00d6\7\24\2\2\u00ca\u00d6\7\22")
+        buf.write("\2\2\u00cb\u00d6\7\25\2\2\u00cc\u00d6\7\5\2\2\u00cd\u00d1")
+        buf.write("\7,\2\2\u00ce\u00d0\t\7\2\2\u00cf\u00ce\3\2\2\2\u00d0")
+        buf.write("\u00d3\3\2\2\2\u00d1\u00cf\3\2\2\2\u00d1\u00d2\3\2\2\2")
+        buf.write("\u00d2\u00d4\3\2\2\2\u00d3\u00d1\3\2\2\2\u00d4\u00d6\7")
+        buf.write("-\2\2\u00d5\u00c4\3\2\2\2\u00d5\u00c8\3\2\2\2\u00d5\u00c9")
+        buf.write("\3\2\2\2\u00d5\u00ca\3\2\2\2\u00d5\u00cb\3\2\2\2\u00d5")
+        buf.write("\u00cc\3\2\2\2\u00d5\u00cd\3\2\2\2\u00d6#\3\2\2\2\u00d7")
+        buf.write("\u00db\7,\2\2\u00d8\u00da\t\7\2\2\u00d9\u00d8\3\2\2\2")
+        buf.write("\u00da\u00dd\3\2\2\2\u00db\u00d9\3\2\2\2\u00db\u00dc\3")
+        buf.write("\2\2\2\u00dc\u00de\3\2\2\2\u00dd\u00db\3\2\2\2\u00de\u00e2")
+        buf.write("\7-\2\2\u00df\u00e2\7\25\2\2\u00e0\u00e2\7\22\2\2\u00e1")
+        buf.write("\u00d7\3\2\2\2\u00e1\u00df\3\2\2\2\u00e1\u00e0\3\2\2\2")
+        buf.write("\u00e2%\3\2\2\2\23)/;DIhmx\u0087\u0092\u00a8\u00bf\u00c1")
+        buf.write("\u00d1\u00d5\u00db\u00e1")
         return buf.getvalue()
 
 
@@ -117,23 +119,24 @@ class SPKParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "','", "<INVALID>", "'FUNKCJA'", "'CA\u0141KOWITA'", 
-                     "'LISTA'", "'U\u0141AMKOWA'", "'NAPIS'", "'JE\u017BELI'", 
-                     "'TO'", "'INACZEJ'", "'DOP\u00D3KI'", "'DLA'", "'W'", 
-                     "'WYPISZ'", "<INVALID>", "<INVALID>", "<INVALID>", 
-                     "<INVALID>", "<INVALID>", "<INVALID>", "'||'", "'&&'", 
-                     "'=='", "'!='", "'>'", "'<'", "'>='", "'<='", "'+'", 
-                     "'-'", "'*'", "'/'", "'%'", "'^'", "'!'", "'='", "'('", 
-                     "')'", "'{'", "'}'", "'['", "']'", "<INVALID>", "';'" ]
+    literalNames = [ "<INVALID>", "','", "<INVALID>", "'LOGICZNA'", "'FUNKCJA'", 
+                     "'CA\u0141KOWITA'", "'LISTA'", "'U\u0141AMKOWA'", "'NAPIS'", 
+                     "'JE\u017BELI'", "'TO'", "'INACZEJ'", "'DOP\u00D3KI'", 
+                     "'DLA'", "'W'", "'WYPISZ'", "<INVALID>", "<INVALID>", 
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                     "'||'", "'&&'", "'=='", "'!='", "'>'", "'<'", "'>='", 
+                     "'<='", "'+'", "'-'", "'*'", "'/'", "'%'", "'^'", "'!'", 
+                     "'='", "'('", "')'", "'{'", "'}'", "'['", "']'", "<INVALID>", 
+                     "';'" ]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "TYPE_NAME", "FUN_", "INT", 
-                      "LIST", "FLOATING", "STRING_", "IF_", "THEN_", "ELSE", 
-                      "WHILE", "FOR", "IN", "PRINT_", "VARIABLE_NAME", "INTEGER_NUMBER", 
-                      "FLOAT_NUMBER", "STRING", "NON_ZERO_DIGIT", "DIGIT", 
-                      "OR", "AND", "EQ", "NEQ", "GT", "LT", "GTEQ", "LTEQ", 
-                      "PLUS", "MINUS", "MULT", "DIV", "MOD", "POW", "NOT", 
-                      "ASSIGN", "OPAR", "CPAR", "OBRACE", "CBRACE", "OSQBRACE", 
-                      "CSQBRACE", "COMMENT", "SEP", "WS", "OTHER" ]
+    symbolicNames = [ "<INVALID>", "<INVALID>", "TYPE_NAME", "BOOL_", "FUN_", 
+                      "INT", "LIST", "FLOATING", "STRING_", "IF_", "THEN_", 
+                      "ELSE", "WHILE", "FOR", "IN", "PRINT_", "VARIABLE_NAME", 
+                      "INTEGER_NUMBER", "FLOAT_NUMBER", "STRING", "NON_ZERO_DIGIT", 
+                      "DIGIT", "OR", "AND", "EQ", "NEQ", "GT", "LT", "GTEQ", 
+                      "LTEQ", "PLUS", "MINUS", "MULT", "DIV", "MOD", "POW", 
+                      "NOT", "ASSIGN", "OPAR", "CPAR", "OBRACE", "CBRACE", 
+                      "OSQBRACE", "CSQBRACE", "COMMENT", "SEP", "WS", "OTHER" ]
 
     RULE_program = 0
     RULE_bigStmt = 1
@@ -162,50 +165,51 @@ class SPKParser ( Parser ):
     EOF = Token.EOF
     T__0=1
     TYPE_NAME=2
-    FUN_=3
-    INT=4
-    LIST=5
-    FLOATING=6
-    STRING_=7
-    IF_=8
-    THEN_=9
-    ELSE=10
-    WHILE=11
-    FOR=12
-    IN=13
-    PRINT_=14
-    VARIABLE_NAME=15
-    INTEGER_NUMBER=16
-    FLOAT_NUMBER=17
-    STRING=18
-    NON_ZERO_DIGIT=19
-    DIGIT=20
-    OR=21
-    AND=22
-    EQ=23
-    NEQ=24
-    GT=25
-    LT=26
-    GTEQ=27
-    LTEQ=28
-    PLUS=29
-    MINUS=30
-    MULT=31
-    DIV=32
-    MOD=33
-    POW=34
-    NOT=35
-    ASSIGN=36
-    OPAR=37
-    CPAR=38
-    OBRACE=39
-    CBRACE=40
-    OSQBRACE=41
-    CSQBRACE=42
-    COMMENT=43
-    SEP=44
-    WS=45
-    OTHER=46
+    BOOL_=3
+    FUN_=4
+    INT=5
+    LIST=6
+    FLOATING=7
+    STRING_=8
+    IF_=9
+    THEN_=10
+    ELSE=11
+    WHILE=12
+    FOR=13
+    IN=14
+    PRINT_=15
+    VARIABLE_NAME=16
+    INTEGER_NUMBER=17
+    FLOAT_NUMBER=18
+    STRING=19
+    NON_ZERO_DIGIT=20
+    DIGIT=21
+    OR=22
+    AND=23
+    EQ=24
+    NEQ=25
+    GT=26
+    LT=27
+    GTEQ=28
+    LTEQ=29
+    PLUS=30
+    MINUS=31
+    MULT=32
+    DIV=33
+    MOD=34
+    POW=35
+    NOT=36
+    ASSIGN=37
+    OPAR=38
+    CPAR=39
+    OBRACE=40
+    CBRACE=41
+    OSQBRACE=42
+    CSQBRACE=43
+    COMMENT=44
+    SEP=45
+    WS=46
+    OTHER=47
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -675,6 +679,9 @@ class SPKParser ( Parser ):
         def FLOAT_NUMBER(self):
             return self.getToken(SPKParser.FLOAT_NUMBER, 0)
 
+        def BOOL_(self):
+            return self.getToken(SPKParser.BOOL_, 0)
+
         def getRuleIndex(self):
             return SPKParser.RULE_printable
 
@@ -698,7 +705,7 @@ class SPKParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 88
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SPKParser.VARIABLE_NAME) | (1 << SPKParser.INTEGER_NUMBER) | (1 << SPKParser.FLOAT_NUMBER) | (1 << SPKParser.STRING))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SPKParser.BOOL_) | (1 << SPKParser.VARIABLE_NAME) | (1 << SPKParser.INTEGER_NUMBER) | (1 << SPKParser.FLOAT_NUMBER) | (1 << SPKParser.STRING))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -877,6 +884,7 @@ class SPKParser ( Parser ):
         def arguments(self):
             return self.getTypedRuleContext(SPKParser.ArgumentsContext,0)
 
+
         def CPAR(self):
             return self.getToken(SPKParser.CPAR, 0)
 
@@ -969,6 +977,9 @@ class SPKParser ( Parser ):
         def CPAR(self):
             return self.getToken(SPKParser.CPAR, 0)
 
+        def SEP(self):
+            return self.getToken(SPKParser.SEP, 0)
+
         def getRuleIndex(self):
             return SPKParser.RULE_function_exec
 
@@ -997,6 +1008,8 @@ class SPKParser ( Parser ):
             self.arguments_exec()
             self.state = 125
             self.match(SPKParser.CPAR)
+            self.state = 126
+            self.match(SPKParser.SEP)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1045,24 +1058,24 @@ class SPKParser ( Parser ):
         self.enterRule(localctx, 22, self.RULE_arguments)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 132
+            self.state = 133
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
-                    self.state = 127
-                    self.match(SPKParser.TYPE_NAME)
                     self.state = 128
-                    self.match(SPKParser.VARIABLE_NAME)
+                    self.match(SPKParser.TYPE_NAME)
                     self.state = 129
+                    self.match(SPKParser.VARIABLE_NAME)
+                    self.state = 130
                     self.match(SPKParser.T__0) 
-                self.state = 134
+                self.state = 135
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
 
-            self.state = 135
-            self.match(SPKParser.TYPE_NAME)
             self.state = 136
+            self.match(SPKParser.TYPE_NAME)
+            self.state = 137
             self.match(SPKParser.VARIABLE_NAME)
         except RecognitionException as re:
             localctx.exception = re
@@ -1107,20 +1120,20 @@ class SPKParser ( Parser ):
         self.enterRule(localctx, 24, self.RULE_arguments_exec)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 143
+            self.state = 144
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,9,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
-                    self.state = 138
-                    self.expr(0)
                     self.state = 139
+                    self.expr(0)
+                    self.state = 140
                     self.match(SPKParser.T__0) 
-                self.state = 145
+                self.state = 146
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,9,self._ctx)
 
-            self.state = 146
+            self.state = 147
             self.expr(0)
         except RecognitionException as re:
             localctx.exception = re
@@ -1174,15 +1187,15 @@ class SPKParser ( Parser ):
         self.enterRule(localctx, 26, self.RULE_declaration)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 148
-            self.match(SPKParser.TYPE_NAME)
             self.state = 149
-            self.match(SPKParser.VARIABLE_NAME)
+            self.match(SPKParser.TYPE_NAME)
             self.state = 150
-            self.match(SPKParser.ASSIGN)
+            self.match(SPKParser.VARIABLE_NAME)
             self.state = 151
-            self.expr(0)
+            self.match(SPKParser.ASSIGN)
             self.state = 152
+            self.expr(0)
+            self.state = 153
             self.match(SPKParser.SEP)
         except RecognitionException as re:
             localctx.exception = re
@@ -1233,13 +1246,13 @@ class SPKParser ( Parser ):
         self.enterRule(localctx, 28, self.RULE_assignment)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 154
-            self.match(SPKParser.VARIABLE_NAME)
             self.state = 155
-            self.match(SPKParser.ASSIGN)
+            self.match(SPKParser.VARIABLE_NAME)
             self.state = 156
-            self.expr(0)
+            self.match(SPKParser.ASSIGN)
             self.state = 157
+            self.expr(0)
+            self.state = 158
             self.match(SPKParser.SEP)
         except RecognitionException as re:
             localctx.exception = re
@@ -1337,30 +1350,30 @@ class SPKParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 165
+            self.state = 166
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SPKParser.MINUS]:
-                self.state = 160
-                self.match(SPKParser.MINUS)
                 self.state = 161
+                self.match(SPKParser.MINUS)
+                self.state = 162
                 self.expr(9)
                 pass
             elif token in [SPKParser.NOT]:
-                self.state = 162
-                self.match(SPKParser.NOT)
                 self.state = 163
+                self.match(SPKParser.NOT)
+                self.state = 164
                 self.expr(8)
                 pass
-            elif token in [SPKParser.VARIABLE_NAME, SPKParser.INTEGER_NUMBER, SPKParser.FLOAT_NUMBER, SPKParser.STRING, SPKParser.OPAR, SPKParser.OSQBRACE]:
-                self.state = 164
+            elif token in [SPKParser.BOOL_, SPKParser.VARIABLE_NAME, SPKParser.INTEGER_NUMBER, SPKParser.FLOAT_NUMBER, SPKParser.STRING, SPKParser.OPAR, SPKParser.OSQBRACE]:
+                self.state = 165
                 self.atom()
                 pass
             else:
                 raise NoViableAltException(self)
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 190
+            self.state = 191
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,12,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -1368,30 +1381,30 @@ class SPKParser ( Parser ):
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    self.state = 188
+                    self.state = 189
                     self._errHandler.sync(self)
                     la_ = self._interp.adaptivePredict(self._input,11,self._ctx)
                     if la_ == 1:
                         localctx = SPKParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 167
+                        self.state = 168
                         if not self.precpred(self._ctx, 10):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 10)")
-                        self.state = 168
-                        self.match(SPKParser.POW)
                         self.state = 169
+                        self.match(SPKParser.POW)
+                        self.state = 170
                         self.expr(11)
                         pass
 
                     elif la_ == 2:
                         localctx = SPKParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 170
+                        self.state = 171
                         if not self.precpred(self._ctx, 7):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
-                        self.state = 171
+                        self.state = 172
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SPKParser.MULT) | (1 << SPKParser.DIV) | (1 << SPKParser.MOD))) != 0)):
@@ -1399,18 +1412,18 @@ class SPKParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 172
+                        self.state = 173
                         self.expr(8)
                         pass
 
                     elif la_ == 3:
                         localctx = SPKParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 173
+                        self.state = 174
                         if not self.precpred(self._ctx, 6):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
-                        self.state = 174
+                        self.state = 175
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not(_la==SPKParser.PLUS or _la==SPKParser.MINUS):
@@ -1418,18 +1431,18 @@ class SPKParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 175
+                        self.state = 176
                         self.expr(7)
                         pass
 
                     elif la_ == 4:
                         localctx = SPKParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 176
+                        self.state = 177
                         if not self.precpred(self._ctx, 5):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
-                        self.state = 177
+                        self.state = 178
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << SPKParser.GT) | (1 << SPKParser.LT) | (1 << SPKParser.GTEQ) | (1 << SPKParser.LTEQ))) != 0)):
@@ -1437,18 +1450,18 @@ class SPKParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 178
+                        self.state = 179
                         self.expr(6)
                         pass
 
                     elif la_ == 5:
                         localctx = SPKParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 179
+                        self.state = 180
                         if not self.precpred(self._ctx, 4):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
-                        self.state = 180
+                        self.state = 181
                         localctx.op = self._input.LT(1)
                         _la = self._input.LA(1)
                         if not(_la==SPKParser.EQ or _la==SPKParser.NEQ):
@@ -1456,38 +1469,38 @@ class SPKParser ( Parser ):
                         else:
                             self._errHandler.reportMatch(self)
                             self.consume()
-                        self.state = 181
+                        self.state = 182
                         self.expr(5)
                         pass
 
                     elif la_ == 6:
                         localctx = SPKParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 182
+                        self.state = 183
                         if not self.precpred(self._ctx, 3):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
-                        self.state = 183
-                        self.match(SPKParser.AND)
                         self.state = 184
+                        self.match(SPKParser.AND)
+                        self.state = 185
                         self.expr(4)
                         pass
 
                     elif la_ == 7:
                         localctx = SPKParser.ExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                        self.state = 185
+                        self.state = 186
                         if not self.precpred(self._ctx, 2):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
-                        self.state = 186
-                        self.match(SPKParser.OR)
                         self.state = 187
+                        self.match(SPKParser.OR)
+                        self.state = 188
                         self.expr(3)
                         pass
 
              
-                self.state = 192
+                self.state = 193
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,12,self._ctx)
 
@@ -1535,6 +1548,9 @@ class SPKParser ( Parser ):
         def STRING(self):
             return self.getToken(SPKParser.STRING, 0)
 
+        def BOOL_(self):
+            return self.getToken(SPKParser.BOOL_, 0)
+
         def OSQBRACE(self):
             return self.getToken(SPKParser.OSQBRACE, 0)
 
@@ -1561,58 +1577,63 @@ class SPKParser ( Parser ):
         self.enterRule(localctx, 32, self.RULE_atom)
         self._la = 0 # Token type
         try:
-            self.state = 208
+            self.state = 211
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SPKParser.OPAR]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 193
-                self.match(SPKParser.OPAR)
                 self.state = 194
-                self.expr(0)
+                self.match(SPKParser.OPAR)
                 self.state = 195
+                self.expr(0)
+                self.state = 196
                 self.match(SPKParser.CPAR)
                 pass
-            elif token in [SPKParser.INTEGER_NUMBER, SPKParser.FLOAT_NUMBER]:
+            elif token in [SPKParser.INTEGER_NUMBER]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 197
-                _la = self._input.LA(1)
-                if not(_la==SPKParser.INTEGER_NUMBER or _la==SPKParser.FLOAT_NUMBER):
-                    self._errHandler.recoverInline(self)
-                else:
-                    self._errHandler.reportMatch(self)
-                    self.consume()
+                self.state = 198
+                self.match(SPKParser.INTEGER_NUMBER)
+                pass
+            elif token in [SPKParser.FLOAT_NUMBER]:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 199
+                self.match(SPKParser.FLOAT_NUMBER)
                 pass
             elif token in [SPKParser.VARIABLE_NAME]:
-                self.enterOuterAlt(localctx, 3)
-                self.state = 198
+                self.enterOuterAlt(localctx, 4)
+                self.state = 200
                 self.match(SPKParser.VARIABLE_NAME)
                 pass
             elif token in [SPKParser.STRING]:
-                self.enterOuterAlt(localctx, 4)
-                self.state = 199
+                self.enterOuterAlt(localctx, 5)
+                self.state = 201
                 self.match(SPKParser.STRING)
                 pass
+            elif token in [SPKParser.BOOL_]:
+                self.enterOuterAlt(localctx, 6)
+                self.state = 202
+                self.match(SPKParser.BOOL_)
+                pass
             elif token in [SPKParser.OSQBRACE]:
-                self.enterOuterAlt(localctx, 5)
-                self.state = 200
+                self.enterOuterAlt(localctx, 7)
+                self.state = 203
                 self.match(SPKParser.OSQBRACE)
-                self.state = 204
+                self.state = 207
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==SPKParser.INTEGER_NUMBER or _la==SPKParser.FLOAT_NUMBER:
-                    self.state = 201
+                    self.state = 204
                     _la = self._input.LA(1)
                     if not(_la==SPKParser.INTEGER_NUMBER or _la==SPKParser.FLOAT_NUMBER):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
                         self.consume()
-                    self.state = 206
+                    self.state = 209
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 207
+                self.state = 210
                 self.match(SPKParser.CSQBRACE)
                 pass
             else:
@@ -1678,39 +1699,39 @@ class SPKParser ( Parser ):
         self.enterRule(localctx, 34, self.RULE_iterable)
         self._la = 0 # Token type
         try:
-            self.state = 220
+            self.state = 223
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [SPKParser.OSQBRACE]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 210
+                self.state = 213
                 self.match(SPKParser.OSQBRACE)
-                self.state = 214
+                self.state = 217
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==SPKParser.INTEGER_NUMBER or _la==SPKParser.FLOAT_NUMBER:
-                    self.state = 211
+                    self.state = 214
                     _la = self._input.LA(1)
                     if not(_la==SPKParser.INTEGER_NUMBER or _la==SPKParser.FLOAT_NUMBER):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
                         self.consume()
-                    self.state = 216
+                    self.state = 219
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 217
+                self.state = 220
                 self.match(SPKParser.CSQBRACE)
                 pass
             elif token in [SPKParser.STRING]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 218
+                self.state = 221
                 self.match(SPKParser.STRING)
                 pass
             elif token in [SPKParser.VARIABLE_NAME]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 219
+                self.state = 222
                 self.match(SPKParser.VARIABLE_NAME)
                 pass
             else:

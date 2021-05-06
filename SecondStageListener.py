@@ -56,6 +56,7 @@ class SecondStageListener(SPKListener):
 
             if ctx.printable().VARIABLE_NAME():
                 exists = False
+                variable_name = str(ctx.printable().VARIABLE_NAME())
                 for i, scope in enumerate(reversed(self.memory['scopes'])):
 
                     if str(ctx.printable().VARIABLE_NAME()) in scope.keys():
@@ -104,6 +105,8 @@ class SecondStageListener(SPKListener):
             else:
                 print(f'Nie zainicjowano funkcji o nazwie {function_name}.')
 
+    def enterExpr(self, ctx:SPKParser.ExprContext):
+        ctx.result = None
     def exitExpr(self, ctx:SPKParser.ExprContext):
         if not self.skipping:
             if not ctx.op and ctx.atom():
@@ -124,7 +127,8 @@ class SecondStageListener(SPKListener):
 
                 elif ctx.atom().INTEGER_NUMBER():
                     ctx.result = int(str(ctx.atom().INTEGER_NUMBER()[0]))
-
+                elif ctx.atom().FLOAT_NUMBER():
+                    ctx.result = float(str(ctx.atom().FLOAT_NUMBER()[0]))
                 else:
                     ctx.result = ctx.atom().expr().result
 

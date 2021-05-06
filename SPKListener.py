@@ -97,6 +97,7 @@ class SPKListener(ParseTreeListener):
     def exitFunction_(self, ctx:SPKParser.Function_Context):
         pass
 
+
     # Enter a parse tree produced by SPKParser#function_exec.
     def enterFunction_exec(self, ctx:SPKParser.Function_execContext):
         pass
@@ -104,6 +105,7 @@ class SPKListener(ParseTreeListener):
     # Exit a parse tree produced by SPKParser#function_exec.
     def exitFunction_exec(self, ctx:SPKParser.Function_execContext):
         pass
+
 
     # Enter a parse tree produced by SPKParser#arguments.
     def enterArguments(self, ctx:SPKParser.ArgumentsContext):
