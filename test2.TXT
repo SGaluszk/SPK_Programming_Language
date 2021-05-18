@@ -9,7 +9,12 @@ FUNKCJA f2(NAPIS n){
 
 }
 
+FUNKCJA f3(){
+    WYPISZ n;
+}
+
 CAŁKOWITA x = 1;
 f1(x, 1.2);
 f1(1);
+
 

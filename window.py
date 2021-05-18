@@ -34,12 +34,11 @@ def save_file():
 
 def run_file():
     
-    proc = subprocess.Popen('python3 main.py ' + filename, stdout=subprocess.PIPE, shell=True, universal_newlines=True,
-                            encoding="UTF-8")
+    proc = subprocess.Popen('python main.py ' + filename, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
     output = proc.stdout.read()
     txt_output.delete(1.0,tk.END)
     txt_output.insert(tk.END, output)
-    f = open("scopes.txt", "r")
+    f = open("scopes.txt", "rb")
     
     
     scopes = f.read()

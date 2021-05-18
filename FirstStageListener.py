@@ -9,14 +9,16 @@ class FirstStageListener(SPKListener):
         self.functions = {}
 
     def exitFunction_(self, ctx:SPKParser.Function_Context):
+        print(ctx.getChild(3).TYPE_NAME())
+        print(ctx.__dir__())
         function_name = str(ctx.VARIABLE_NAME())
         if function_name in self.functions.keys():
             print('Funkcja o tej nazwie została już zainicjalizowana.')
         else:
             self.functions[function_name] = {
                 'arguments': [{'type': str(t), 'name': str(n)} for t, n in zip(ctx.arguments().TYPE_NAME(), ctx.arguments().VARIABLE_NAME())],
-                'body': []
+                # 'body': []
             }
-        for stmt in ctx.bigStmt():
-            self.functions[function_name]['body'].append(stmt.getText())
-        print(self.functions[function_name]['body'])
+        # for stmt in ctx.bigStmt():
+        #     self.functions[function_name]['body'].append(stmt.getText())
+        # print(self.functions[function_name]['body'])

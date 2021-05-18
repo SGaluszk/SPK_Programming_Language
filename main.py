@@ -18,6 +18,7 @@ def main(filename):
     stream = CommonTokenStream(lexer)
     parser = SPKParser(stream)
     tree = parser.program()
+    print(tree)
     walker = ParseTreeWalker()
 
     listener1 = FirstStageListener()

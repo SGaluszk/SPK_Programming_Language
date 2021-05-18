@@ -51,36 +51,41 @@ class SecondStageListener(SPKListener):
             self.memory['scopes'].pop(-1)
             print("Koniec lokalnego scope'a")
 
-    def enterPrint_(self, ctx: SPKParser.Print_Context):
+    def exitPrint_(self, ctx: SPKParser.Print_Context):
         if not self.skipping:
-
-            if ctx.printable().VARIABLE_NAME():
-                exists = False
-                variable_name = str(ctx.printable().VARIABLE_NAME())
-                for i, scope in enumerate(reversed(self.memory['scopes'])):
-
-                    if str(ctx.printable().VARIABLE_NAME()) in scope.keys():
-                        value = scope[str(ctx.printable().VARIABLE_NAME())]['value']
-                        exists = True
-                        break
-
-                if exists:
-                    print(f"PRINT: {value}")
-                else:
-                    print(f'BŁĄD: Zmienna {variable_name} nie istnieje.')
-
+            if ctx.expr().result:
+                print(f"PRINT: {ctx.expr().result}")
             else:
-                if (ctx.printable().STRING()):
-                    print(f"PRINT: {str(ctx.printable().STRING())[1:-1]}")
+                print("BŁĄD, nie ma takiej zmiennej")
 
-                elif (ctx.printable().INTEGER_NUMBER()):
-                    print(f"PRINT: {ctx.printable().INTEGER_NUMBER()}")
+            # if ctx.expr().atom().VARIABLE_NAME():
+            #     exists = False
+            #     variable_name = str(ctx.expr().atom().VARIABLE_NAME())
+            #     for i, scope in enumerate(reversed(self.memory['scopes'])):
 
-                elif (ctx.printable().FLOAT_NUMBER()):
-                    print(f"PRINT: {ctx.printable().FLOAT_NUMBER()}")
+            #         if str(ctx.expr().atom().VARIABLE_NAME()) in scope.keys():
+            #             value = scope[str(ctx.expr().atom().VARIABLE_NAME())]['value']
+            #             exists = True
+            #             break
 
-                elif (ctx.printable().BOOL_()):
-                    print(f"PRINT: {ctx.printable().BOOL_()}")
+            #     if exists:
+            #         print(f"PRINT: {value}")
+            #     else:
+            #         print(f'BŁĄD: Zmienna {variable_name} nie istnieje.')
+
+            # else:
+            #     print(f"PRINT: {ctx.expr().result}")
+            #     # if (ctx.expr().STRING()):
+            #     #     print(f"PRINT: {str(ctx.expr().STRING())[1:-1]}")
+
+            #     # elif (ctx.expr().INTEGER_NUMBER()):
+            #     #     print(f"PRINT: {ctx.expr().INTEGER_NUMBER()}")
+
+            #     # elif (ctx.expr().FLOAT_NUMBER()):
+            #     #     print(f"PRINT: {ctx.expr().FLOAT_NUMBER()}")
+
+            #     # elif (ctx.expr().BOOL_()):
+            #     #     print(f"PRINT: {ctx.expr().BOOL_()}")
 
     def enterFunction_(self, ctx:SPKParser.Function_Context):
         self.skipping = True
@@ -107,6 +112,7 @@ class SecondStageListener(SPKListener):
 
     def enterExpr(self, ctx:SPKParser.ExprContext):
         ctx.result = None
+
     def exitExpr(self, ctx:SPKParser.ExprContext):
         if not self.skipping:
             if not ctx.op and ctx.atom():
@@ -126,9 +132,25 @@ class SecondStageListener(SPKListener):
                         print(f'BŁĄD: Zmienna {variable_name} nie istnieje.')
 
                 elif ctx.atom().INTEGER_NUMBER():
-                    ctx.result = int(str(ctx.atom().INTEGER_NUMBER()[0]))
+                    ctx.result = int(str(ctx.atom().INTEGER_NUMBER()))
                 elif ctx.atom().FLOAT_NUMBER():
-                    ctx.result = float(str(ctx.atom().FLOAT_NUMBER()[0]))
+                    ctx.result = float(str(ctx.atom().FLOAT_NUMBER()))
+                elif ctx.atom().STRING():
+                    ctx.result = str(ctx.atom().STRING())[1:-1]
+                elif ctx.atom().BOOL_VALUE():
+                    ctx.result = True if str(ctx.atom().BOOL_VALUE()) == 'Prawda' else False
+                elif ctx.atom().list_values():
+                    # tmp_list = []
+                    # print(ctx.atom().list_values().getText())
+                    # elements = ctx.atom().list_values().getText().split(',')
+                    # for element in elements:
+                    #     value = None
+                    #     if element == 'PRAWDA':
+                    #         value = True
+                    #     elif element == 'FAŁSZ':
+                    #         value = False
+                    # values = ctx.atom().list_values().expr()
+                    ctx.result = [expr.result for expr in ctx.atom().list_values().expr()]
                 else:
                     ctx.result = ctx.atom().expr().result
 

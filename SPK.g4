@@ -11,20 +11,20 @@ while_stat : WHILE expr THEN_ block;
 
 for_loop : FOR VARIABLE_NAME IN iterable block;
 
-print_ : PRINT_ printable SEP;
+print_ : PRINT_ expr SEP;
 
-printable : STRING | VARIABLE_NAME | INTEGER_NUMBER | FLOAT_NUMBER | BOOL_;
+
 
 condition_block : expr THEN_ block;
 
 
 block : OBRACE block CBRACE | OBRACE bigStmt+ CBRACE | bigStmt;
 
-function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR OBRACE bigStmt+ CBRACE SEP;
+function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR OBRACE bigStmt+ CBRACE;
 
 function_exec : VARIABLE_NAME OPAR arguments_exec CPAR SEP;
 
-arguments : (TYPE_NAME VARIABLE_NAME ',')* TYPE_NAME VARIABLE_NAME;
+arguments : ((TYPE_NAME VARIABLE_NAME ',')* TYPE_NAME VARIABLE_NAME)?;
 arguments_exec : (expr ',')* expr;
 
 declaration : TYPE_NAME VARIABLE_NAME ASSIGN expr SEP;
@@ -64,32 +64,34 @@ atom
  | FLOAT_NUMBER
  | VARIABLE_NAME            
  | STRING  
- | BOOL_
- | OSQBRACE (INTEGER_NUMBER | FLOAT_NUMBER)* CSQBRACE     
+ | BOOL_VALUE
+ | list_values    
  ;
 
 iterable
- : OSQBRACE (INTEGER_NUMBER | FLOAT_NUMBER)* CSQBRACE    
+ : list_values    
  | STRING
  | VARIABLE_NAME
  ;
-
+BOOL_VALUE : 'Prawda' | 'Fa\u0142sz';
 VARIABLE_NAME
- : [a-zA-Z_] [a-zA-Z_0-9]*
+ : [a-zA-Z_\u00D3\u0104\u0105\u0106\u0107\u0118\u0119\u0141\u0142\u0143\u0144\u015A\u015B\u0179\u017A\u017B\u017C\u00F3] 
+ [a-zA-Z_0-9\u00D3\u0104\u0105\u0106\u0107\u0118\u0119\u0141\u0142\u0143\u0144\u015A\u015B\u0179\u017A\u017B\u017C\u00F3]*
  ;
- 
+
 
 INTEGER_NUMBER : '-'? NON_ZERO_DIGIT DIGIT* | '0';
 FLOAT_NUMBER : '-'? NON_ZERO_DIGIT DIGIT* '.' DIGIT+ | '0.' DIGIT+;
 STRING
  : '"' (~["\r\n] | '""')* '"'
  ;
+list_values : '['((expr',')* expr)? ']';
 
 NON_ZERO_DIGIT : [1-9];
 DIGIT : [0-9];
 
-OR : '||';
-AND : '&&';
+OR : 'LUB';
+AND : 'I';
 EQ : '==';
 NEQ : '!=';
 GT : '>';

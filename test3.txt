@@ -1,6 +1,13 @@
 CAŁKOWITA x1 = 1 - (2 - 3);
+UŁAMKOWA x10 = 0.1;
 CAŁKOWITA x2 = (2+2)*2;
 CAŁKOWITA x3 = 1;
 CAŁKOWITA x4 = 2 * (x3 + 1);
-UŁAMKOWA x3 = 1;
+NAPIS n = "xd";
+WYPISZ n;
 WYPISZ "xd";
+LISTA l = [0 ,             1.2 ,"dupa",2+2,Prawda];
+WYPISZ l;
+
+
+

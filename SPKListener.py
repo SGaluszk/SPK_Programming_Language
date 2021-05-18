@@ -62,15 +62,6 @@ class SPKListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SPKParser#printable.
-    def enterPrintable(self, ctx:SPKParser.PrintableContext):
-        pass
-
-    # Exit a parse tree produced by SPKParser#printable.
-    def exitPrintable(self, ctx:SPKParser.PrintableContext):
-        pass
-
-
     # Enter a parse tree produced by SPKParser#condition_block.
     def enterCondition_block(self, ctx:SPKParser.Condition_blockContext):
         pass
@@ -167,6 +158,15 @@ class SPKListener(ParseTreeListener):
 
     # Exit a parse tree produced by SPKParser#iterable.
     def exitIterable(self, ctx:SPKParser.IterableContext):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#list_values.
+    def enterList_values(self, ctx:SPKParser.List_valuesContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#list_values.
+    def exitList_values(self, ctx:SPKParser.List_valuesContext):
         pass
 
 
