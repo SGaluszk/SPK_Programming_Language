@@ -10,7 +10,6 @@ from SecondStageListener import SecondStageListener
 
 def main(filename):
     f = open('scopes.txt', 'w+')
-
     name = filename + '.txt'
     data = open(name, 'r', encoding="UTF-8").read()
     inputStream = InputStream(data)
@@ -18,13 +17,12 @@ def main(filename):
     stream = CommonTokenStream(lexer)
     parser = SPKParser(stream)
     tree = parser.program()
-    print(tree)
     walker = ParseTreeWalker()
 
     listener1 = FirstStageListener()
     walker.walk(listener1, tree)
 
-    listener2 = SecondStageListener(listener1.functions)
+    listener2 = SecondStageListener(listener1.functions, walker)
     walker.walk(listener2, tree)
 
     f.write(repr(listener2.memory['scopes']))

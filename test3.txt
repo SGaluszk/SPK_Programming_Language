@@ -8,6 +8,8 @@ WYPISZ n;
 WYPISZ "xd";
 LISTA l = [0 ,             1.2 ,"dupa",2+2,Prawda];
 WYPISZ l;
+WYPISZ "test";
+
 
 
 

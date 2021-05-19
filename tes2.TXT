@@ -1,6 +1,21 @@
+LOGICZNA L = 1<2;
+WYPISZ L;
+WYPISZ 1>2;
+CAŁKOWITA X = 1;
+CAŁKOWITA X2 = 5;
 
-CAŁKOWITA xĄąĘęÓóŁłŚśŻżŹźĆćŃń1 = 2 - 1 - 3;
-WYPISZ xĄąĘęÓóŁłŚśŻżŹźĆćŃń1;
+
+JEŻELI X<1 TO {
+	WYPISZ "IF";
+	
+}
+INACZEJ JEŻELI X<2 TO{
+	WYPISZ "IF ELSE";
+}
+INACZEJ{
+	WYPISZ "ELSE";
+}
+
 
 
 

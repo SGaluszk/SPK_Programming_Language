@@ -71,6 +71,15 @@ class SPKListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SPKParser#condition.
+    def enterCondition(self, ctx:SPKParser.ConditionContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#condition.
+    def exitCondition(self, ctx:SPKParser.ConditionContext):
+        pass
+
+
     # Enter a parse tree produced by SPKParser#block.
     def enterBlock(self, ctx:SPKParser.BlockContext):
         pass

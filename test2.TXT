@@ -1,12 +1,13 @@
 FUNKCJA f1(CAŁKOWITA x, UŁAMKOWA X2){
-    WYPISZ x;
+    WYPISZ x + X2;
     WYPISZ y;
-
+    CAŁKOWITA X3 = 13;
+	WYPISZ X3;
 }
 
 FUNKCJA f2(NAPIS n){
     WYPISZ n;
-
+    f1(x, 1.2);
 }
 
 FUNKCJA f3(){
@@ -14,7 +15,14 @@ FUNKCJA f3(){
 }
 
 CAŁKOWITA x = 1;
-f1(x, 1.2);
+f1(x, 1);
 f1(1);
+f2("asd");
+WYPISZ X3;
+
+
+
+
+
 
 

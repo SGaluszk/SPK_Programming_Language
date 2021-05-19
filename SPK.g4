@@ -15,12 +15,13 @@ print_ : PRINT_ expr SEP;
 
 
 
-condition_block : expr THEN_ block;
+condition_block : condition THEN_ block;
+condition: expr;
 
+block : OBRACE block CBRACE | OBRACE bigStmt+ CBRACE;
 
-block : OBRACE block CBRACE | OBRACE bigStmt+ CBRACE | bigStmt;
-
-function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR OBRACE bigStmt+ CBRACE;
+function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR  block ;
+// function_body: OBRACE bigStmt+ CBRACE;
 
 function_exec : VARIABLE_NAME OPAR arguments_exec CPAR SEP;
 

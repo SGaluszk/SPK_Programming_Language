@@ -4,12 +4,12 @@ from SPKParser import SPKParser
 
 class SecondStageListener(SPKListener):
 
-    def __init__(self, functions_data):
+    def __init__(self, functions_data, walker):
         self.memory = {
             'functions': functions_data,
             'scopes': [{}]
         }
-
+        self.walker = walker
         self.skipping = False
         print('SECOND STAGE')
 
@@ -43,20 +43,18 @@ class SecondStageListener(SPKListener):
                 print("BŁĄD: Nie możesz przypisać wartości do niezainicjowanej zmiennej")
 
     def enterBlock(self, ctx: SPKParser.BlockContext):
-        if not self.skipping:
-            self.memory['scopes'].append({})
+        # if not self.skipping:
+        self.memory['scopes'].append({})
 
     def exitBlock(self, ctx: SPKParser.BlockContext):
-        if not self.skipping:
-            self.memory['scopes'].pop(-1)
-            print("Koniec lokalnego scope'a")
+        # if not self.skipping:
+        self.memory['scopes'].pop(-1)
+        print("Koniec lokalnego scope'a")
 
     def exitPrint_(self, ctx: SPKParser.Print_Context):
         if not self.skipping:
-            if ctx.expr().result:
+            if ctx.expr().result is not None:
                 print(f"PRINT: {ctx.expr().result}")
-            else:
-                print("BŁĄD, nie ma takiej zmiennej")
 
             # if ctx.expr().atom().VARIABLE_NAME():
             #     exists = False
@@ -107,6 +105,22 @@ class SecondStageListener(SPKListener):
                 if expected_len != actual_len:
                     print(f'Nieprawidłowa liczba argumentów. Oczekiwano {expected_len}, otrzymano {actual_len}.')
                     return
+    
+                self.memory['scopes'].append({})
+
+                for arg, arg_exec in zip(f['arguments'], ctx.arguments_exec().expr()):
+
+                    value = arg_exec.result
+                    if correct_type(arg['type'], value):
+                        self.memory['scopes'][-1][arg['name']] = {'type': arg['type'], 'value': value}
+                    else:
+                        self.memory['scopes'].pop(-1)
+                        print("Niezgodność typów :(")
+                        return
+
+                self.walker.walk(self, f['block'])
+                self.memory['scopes'].pop(-1)
+
             else:
                 print(f'Nie zainicjowano funkcji o nazwie {function_name}.')
 
@@ -154,17 +168,81 @@ class SecondStageListener(SPKListener):
                 else:
                     ctx.result = ctx.atom().expr().result
 
-            elif ctx.op and ctx.expr(0).result and ctx.expr(1).result:
-                if str(ctx.MINUS()) == '-':
+            elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
+                if ctx.MINUS():
                     ctx.result = ctx.expr(0).result - ctx.expr(1).result
-                elif str(ctx.PLUS()) == '+':
+                elif ctx.PLUS():
                     ctx.result = ctx.expr(0).result + ctx.expr(1).result
-                elif str(ctx.MULT()) == '*':
+                elif ctx.MULT():
                     ctx.result = ctx.expr(0).result * ctx.expr(1).result
-                elif str(ctx.DIV()) == '/':
+                elif ctx.DIV():
                     ctx.result = ctx.expr(0).result / ctx.expr(1).result
+                elif ctx.LTEQ():
+                    ctx.result = ctx.expr(0).result <= ctx.expr(1).result
+                elif ctx.GTEQ():
+                    ctx.result = ctx.expr(0).result >= ctx.expr(1).result
+                elif ctx.LT():
+                    ctx.result = ctx.expr(0).result < ctx.expr(1).result 
+                elif ctx.GT():
+                    ctx.result = ctx.expr(0).result > ctx.expr(1).result
+                elif ctx.EQ():
+                    ctx.result = ctx.expr(0).result == ctx.expr(1).result
+                elif ctx.NEQ():
+                    ctx.result = ctx.expr(0).result != ctx.expr(1).result
+                         
+    # Enter a parse tree produced by SPKParser#condition.
+    def enterCondition(self, ctx:SPKParser.ConditionContext):
+        self.skipping = False
+
+    # Exit a parse tree produced by SPKParser#condition.
+    def exitCondition(self, ctx:SPKParser.ConditionContext):
+        self.skipping = True
+
+    def enterIf_stat(self, ctx:SPKParser.If_statContext):
+        self.skipping = True
+        
+
+    # Exit a parse tree produced by SPKParser#if_stat.
+    def exitIf_stat(self, ctx:SPKParser.If_statContext):
+        self.skipping = False
+        print("Wchodze do exit if stat!!!!!!!!!!!")
+
+        for cond_block in ctx.condition_block():
+            print("siema, tu condition block")
+            print(cond_block.condition().expr().result)
+            if cond_block.condition().expr().result:
+                print("kondycja spełniona")
+                self.walker.walk(self, cond_block.block())
+                return
+            
+        if ctx.block():
+            self.walker.walk(self, ctx.block())
+            print(self.memory["scopes"])
+    
 
 
+
+    # Exit a parse tree produced by SPKParser#while_stat.
+    def exitWhile_stat(self, ctx:SPKParser.While_statContext):
+        while ctx.expr().result:
+            print(ctx.expr().result)
+            self.walker.walk(self, ctx.block())
+            self.walker.walk(self, ctx.expr())
+        # while True:
+        #     if not ctx.expr().result:
+        #         break
+        #     self.walker.walk(self, ctx.block())
+            
+            
+
+    # Enter a parse tree produced by SPKParser#for_loop.
+    def enterFor_loop(self, ctx:SPKParser.For_loopContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#for_loop.
+    def exitFor_loop(self, ctx:SPKParser.For_loopContext):
+        pass
+        
 def correct_type(variable_type: str, value):
     if variable_type == 'CAŁKOWITA':
         return type(value) == int
