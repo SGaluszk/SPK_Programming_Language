@@ -1,0 +1,14 @@
+UŁAMKOWA x = 1.5;
+DOPÓKI x < 10 TO{
+	WYPISZ x;
+	x = x + 1;
+}
+
+
+
+
+
+
+
+
+

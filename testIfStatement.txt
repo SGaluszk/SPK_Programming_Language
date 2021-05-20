@@ -1,0 +1,27 @@
+
+CAŁKOWITA X = 1;
+
+
+
+JEŻELI X<1 TO {
+	WYPISZ "IF";
+	
+}
+INACZEJ JEŻELI X<2 TO{
+	WYPISZ "IF ELSE";
+}
+INACZEJ{
+	WYPISZ "ELSE";
+}
+
+LOGICZNA P = Prawda;
+JEŻELI P TO {
+WYPISZ "PRAWDA";
+}
+INACZEJ{
+WYPISZ "FAŁSZ";
+}
+
+
+
+

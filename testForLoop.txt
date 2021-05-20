@@ -1,0 +1,12 @@
+LISTA L = [1,2,3,4];
+DLA i W L{
+	WYPISZ i;
+	WYPISZ i + 10;
+}
+
+
+
+
+
+
+
