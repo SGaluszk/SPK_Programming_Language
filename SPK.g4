@@ -86,6 +86,7 @@ FLOAT_NUMBER : '-'? NON_ZERO_DIGIT DIGIT* '.' DIGIT+ | '0.' DIGIT+;
 STRING
  : '"' (~["\r\n] | '""')* '"'
  ;
+list_from_index: VARIABLE_NAME OSQBRACE INTEGER_NUMBER CSQBRACE;
 list_values : '['((expr',')* expr)? ']';
 
 NON_ZERO_DIGIT : [1-9];

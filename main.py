@@ -28,7 +28,7 @@ def main(filename):
     f.write(repr(listener2.memory['scopes']))
     f.close()
 
-    print(listener2.memory['scopes'])
+    # print(listener2.memory['scopes'])
 
 
 if __name__ == '__main__':

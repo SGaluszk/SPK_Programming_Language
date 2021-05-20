@@ -10,7 +10,7 @@ class FirstStageListener(SPKListener):
 
     def exitFunction_(self, ctx:SPKParser.Function_Context):
         # print(ctx.getChild(8))
-        print(ctx.block())
+        # print(ctx.block())
         # print(ctx.__dir__())
 
         
