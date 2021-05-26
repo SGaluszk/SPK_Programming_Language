@@ -29,7 +29,8 @@ arguments : ((TYPE_NAME VARIABLE_NAME ',')* TYPE_NAME VARIABLE_NAME)?;
 arguments_exec : (expr ',')* expr;
 
 declaration : TYPE_NAME VARIABLE_NAME ASSIGN expr SEP;
-assignment : VARIABLE_NAME ASSIGN expr SEP;
+assignment : VARIABLE_NAME list_index? ASSIGN expr SEP;
+
 
 TYPE_NAME : (INT | LIST | FLOATING | STRING_ | BOOL_ );
 BOOL_ : 'LOGICZNA';
@@ -45,6 +46,7 @@ WHILE: 'DOP\u00D3KI';
 FOR: 'DLA';
 IN: 'W';
 PRINT_: 'WYPISZ';
+LENGTH: 'D\u0141UGO\u015A\u0106';
 
 expr
  : expr POW expr                        
@@ -56,17 +58,19 @@ expr
  | expr op=(EQ | NEQ) expr              
  | expr AND expr                        
  | expr OR expr                         
- | atom                          
+ | atom
  ;
 
 atom
  : OPAR expr CPAR 
+ | LENGTH '(' iterable ')'                    
  | INTEGER_NUMBER 
  | FLOAT_NUMBER
  | VARIABLE_NAME            
  | STRING  
  | BOOL_VALUE
- | list_values    
+ | list_values  
+ | list_element  
  ;
 
 iterable
@@ -81,16 +85,17 @@ VARIABLE_NAME
  ;
 
 
-INTEGER_NUMBER : '-'? NON_ZERO_DIGIT DIGIT* | '0';
-FLOAT_NUMBER : '-'? NON_ZERO_DIGIT DIGIT* '.' DIGIT+ | '0.' DIGIT+;
+INTEGER_NUMBER : NON_ZERO_DIGIT DIGIT* | '0';
+FLOAT_NUMBER : NON_ZERO_DIGIT DIGIT* '.' DIGIT+ | '0.' DIGIT+;
 STRING
  : '"' (~["\r\n] | '""')* '"'
  ;
-list_from_index: VARIABLE_NAME OSQBRACE INTEGER_NUMBER CSQBRACE;
+list_element: VARIABLE_NAME list_index;
 list_values : '['((expr',')* expr)? ']';
-
+list_index: OSQBRACE expr CSQBRACE;
 NON_ZERO_DIGIT : [1-9];
 DIGIT : [0-9];
+
 
 OR : 'LUB';
 AND : 'I';

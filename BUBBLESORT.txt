@@ -1,0 +1,29 @@
+LISTA L = [100,7,2,9,4,0,12];
+WYPISZ L;
+DLA i W [0,1,2,3,4,5,6]{
+	DLA j W [0,1,2,3,4,5]{
+		CAŁKOWITA NEXT = j+1;
+
+		
+		JEŻELI L[j] > L[j+1] TO{
+
+	CAŁKOWITA tmp = L[j];
+		L[j] = L[NEXT];
+		L[NEXT] = tmp;
+}}}
+WYPISZ L;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

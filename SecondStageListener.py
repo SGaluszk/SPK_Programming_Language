@@ -11,6 +11,12 @@ class SecondStageListener(SPKListener):
         }
         self.walker = walker
         self.skipping = False
+        self.skipExpr = False
+        self.skipBlock = False
+        self.skipCondition = False
+        self.for_loop_level = 0
+        self.while_loop_level = 0
+        self.if_loop_level = 0
         print('SECOND STAGE')
 
     def exitDeclaration(self, ctx: SPKParser.DeclarationContext):  # CALKOWITA x = 2;
@@ -27,27 +33,47 @@ class SecondStageListener(SPKListener):
 
     def exitAssignment(self, ctx: SPKParser.AssignmentContext):  # x = 2;
         if not self.skipping:
-            exists = False
             for scope in reversed(self.memory['scopes']):
-
                 if str(ctx.VARIABLE_NAME()) in scope.keys():
                     type_name = scope[str(ctx.VARIABLE_NAME())]['type']
                     value = ctx.expr().result
-                    if correct_type(type_name, value):
-                        scope[str(ctx.VARIABLE_NAME())]['value'] = value
+                    if ctx.list_index():
+                        if type_name == 'LISTA':
+                            index = ctx.list_index().expr().result
+                            if type(index) == int:
+
+                                variable = scope[str(ctx.VARIABLE_NAME())]['value']
+                                if index < len(variable):
+                                    variable[index] = value
+                                    scope[str(ctx.VARIABLE_NAME())]['value'] = variable
+                                else:
+                                    print('BŁĄD: indeks listy poza zakresem.')
+                            else:
+                                print('BŁĄD: indeks musi być typu całkowitego.')
+
+                        else:
+                            print('BŁĄD: nie można odnieść się przez indeks do tej zmiennej. (object is not subscriptable hehe)')
+
                     else:
-                        print(f'BŁĄD: Brak zgodności typów danych. Podano ({type(value)}), oczekiwano wartość typu {type_name}.')
-                    exists = True
-                    break
-            if not exists:
-                print("BŁĄD: Nie możesz przypisać wartości do niezainicjowanej zmiennej")
+
+                        if correct_type(type_name, value):
+                            scope[str(ctx.VARIABLE_NAME())]['value'] = value
+                        else:
+                            print(f'BŁĄD: Brak zgodności typów danych. Podano ({type(value)}), oczekiwano wartość typu {type_name}.')
+
+                    return
+            print("BŁĄD: Nie możesz przypisać wartości do niezainicjowanej zmiennej")
 
     def enterBlock(self, ctx: SPKParser.BlockContext):
-        # if not self.skipping:
+        if self.skipBlock:
+            self.skipping = True
+            self.skipExpr = True
         self.memory['scopes'].append({})
 
     def exitBlock(self, ctx: SPKParser.BlockContext):
-        # if not self.skipping:
+        self.skipping = False
+        self.skipExpr = False
+        
         self.memory['scopes'].pop(-1)
         # print("Koniec lokalnego scope'a")
 
@@ -56,40 +82,13 @@ class SecondStageListener(SPKListener):
             if ctx.expr().result is not None:
                 print(f"WYPISANIE: {ctx.expr().result}")
 
-            # if ctx.expr().atom().VARIABLE_NAME():
-            #     exists = False
-            #     variable_name = str(ctx.expr().atom().VARIABLE_NAME())
-            #     for i, scope in enumerate(reversed(self.memory['scopes'])):
-
-            #         if str(ctx.expr().atom().VARIABLE_NAME()) in scope.keys():
-            #             value = scope[str(ctx.expr().atom().VARIABLE_NAME())]['value']
-            #             exists = True
-            #             break
-
-            #     if exists:
-            #         print(f"PRINT: {value}")
-            #     else:
-            #         print(f'BŁĄD: Zmienna {variable_name} nie istnieje.')
-
-            # else:
-            #     print(f"PRINT: {ctx.expr().result}")
-            #     # if (ctx.expr().STRING()):
-            #     #     print(f"PRINT: {str(ctx.expr().STRING())[1:-1]}")
-
-            #     # elif (ctx.expr().INTEGER_NUMBER()):
-            #     #     print(f"PRINT: {ctx.expr().INTEGER_NUMBER()}")
-
-            #     # elif (ctx.expr().FLOAT_NUMBER()):
-            #     #     print(f"PRINT: {ctx.expr().FLOAT_NUMBER()}")
-
-            #     # elif (ctx.expr().BOOL_()):
-            #     #     print(f"PRINT: {ctx.expr().BOOL_()}")
-
     def enterFunction_(self, ctx:SPKParser.Function_Context):
         self.skipping = True
+        self.skipExpr = True
 
     def exitFunction_(self, ctx:SPKParser.Function_Context):
         self.skipping = False
+        self.skipExpr = False
 
     def exitFunction_exec(self, ctx:SPKParser.Function_execContext):
         if not self.skipping:
@@ -128,9 +127,22 @@ class SecondStageListener(SPKListener):
         ctx.result = None
 
     def exitExpr(self, ctx:SPKParser.ExprContext):
-        if not self.skipping:
+        if not self.skipExpr:
             if not ctx.op and ctx.atom():
-                if ctx.atom().VARIABLE_NAME():
+                if ctx.atom().LENGTH():
+                    if ctx.atom().iterable().STRING():
+                        ctx.result = len(str(ctx.atom().iterable().STRING())[1:-1])
+                    elif ctx.atom().iterable().list_values():
+                        ctx.result = len(ctx.atom().iterable().list_values().expr())
+                    elif ctx.atom().iterable().VARIABLE_NAME():
+                        variable = self.get_variable_value(str(ctx.atom().iterable().VARIABLE_NAME()))
+                        if type(variable) in (list, str):
+                            ctx.result = len(variable)
+                        else:
+                            print('BŁĄD: nie można obliczyć długości tej zmiennej.')
+                    
+
+                elif ctx.atom().VARIABLE_NAME():
                     variable_name = str(ctx.atom().VARIABLE_NAME())
                     ctx.result = self.get_variable_value(variable_name)
 
@@ -143,19 +155,21 @@ class SecondStageListener(SPKListener):
                 elif ctx.atom().BOOL_VALUE():
                     ctx.result = True if str(ctx.atom().BOOL_VALUE()) == 'Prawda' else False
                 elif ctx.atom().list_values():
-                    # tmp_list = []
-                    # print(ctx.atom().list_values().getText())
-                    # elements = ctx.atom().list_values().getText().split(',')
-                    # for element in elements:
-                    #     value = None
-                    #     if element == 'PRAWDA':
-                    #         value = True
-                    #     elif element == 'FAŁSZ':
-                    #         value = False
-                    # values = ctx.atom().list_values().expr()
                     ctx.result = [expr.result for expr in ctx.atom().list_values().expr()]
+                elif ctx.atom().list_element():
+                    list_variable = self.get_variable_value(str(ctx.atom().list_element().VARIABLE_NAME()))
+                    if type(list_variable) == list:
+                        index = ctx.atom().list_element().list_index().expr().result
+                        if type(index) == int:
+                            ctx.result = list_variable[index]
+                        else:
+                            print('BŁĄD: indeks musi być typu całkowitego.')
+                
                 else:
                     ctx.result = ctx.atom().expr().result
+
+            elif not ctx.op and ctx.MINUS():
+                ctx.result = -1 * ctx.expr(0).result
 
             elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
                 if ctx.MINUS():
@@ -182,41 +196,64 @@ class SecondStageListener(SPKListener):
                          
     # Enter a parse tree produced by SPKParser#condition.
     def enterCondition(self, ctx:SPKParser.ConditionContext):
+        self.skipExpr = False
         self.skipping = False
+        self.skipBlock = False
+        if self.skipCondition:
+            self.skipExpr = True
 
     # Exit a parse tree produced by SPKParser#condition.
     def exitCondition(self, ctx:SPKParser.ConditionContext):
+        self.skipExpr = True
         self.skipping = True
+        self.skipBlock = True
+        if self.skipCondition:
+            self.skipExpr = False
 
     def enterIf_stat(self, ctx:SPKParser.If_statContext):
+        self.skipExpr = True
         self.skipping = True
+        self.skipBlock = True
+        self.if_loop_level += 1
         
 
     # Exit a parse tree produced by SPKParser#if_stat.
     def exitIf_stat(self, ctx:SPKParser.If_statContext):
+        self.skipExpr = False
         self.skipping = False
-
-        for cond_block in ctx.condition_block():
-            # print("siema, tu condition block")
-            # print(cond_block.condition().expr().result)
-            if cond_block.condition().expr().result:
-                # print("kondycja spełniona")
-                self.walker.walk(self, cond_block.block())
-                return
-            
-        if ctx.block():
-            self.walker.walk(self, ctx.block())
-            # print(self.memory["scopes"])
+        self.skipBlock = False
+        self.if_loop_level -= 1
+        if self.if_loop_level == 0:
+            for cond_block in ctx.condition_block():
+                # print("siema, tu condition block")
+                # print(cond_block.condition().expr().result)
+                if cond_block.condition().expr().result:
+                    # print("kondycja spełniona")
+                    self.walker.walk(self, cond_block.block())
+                    return
+                
+            if ctx.block():
+                self.walker.walk(self, ctx.block())
+                # print(self.memory["scopes"])
     
 
-
+    def enterWhile_stat(self, ctx):
+        self.while_loop_level += 1
+        # self.skipping = True
+        self.skipBlock = True
+        self.skipCondition = True
 
     # Exit a parse tree produced by SPKParser#while_stat.
     def exitWhile_stat(self, ctx:SPKParser.While_statContext):
-        while ctx.expr().result:
-            # print(ctx.expr().result)
-            self.walker.walk(self, ctx.block())
-            self.walker.walk(self, ctx.expr())
+        self.while_loop_level -= 1
+        self.skipCondition = False
+        if self.while_loop_level == 0:
+
+            
+            self.skipBlock = False
+            while ctx.expr().result:
+                self.walker.walk(self, ctx.block())
+                self.walker.walk(self, ctx.expr())
         # while True:
         #     if not ctx.expr().result:
         #         break
@@ -226,50 +263,41 @@ class SecondStageListener(SPKListener):
 
     # Enter a parse tree produced by SPKParser#for_loop.
     def enterFor_loop(self, ctx:SPKParser.For_loopContext):
-        self.skipping = True
-
+        self.for_loop_level += 1
+        # self.skipping = True
+        self.skipBlock = True
+        self.skipCondition = True
+        
     # Exit a parse tree produced by SPKParser#for_loop.
     def exitFor_loop(self, ctx:SPKParser.For_loopContext):
-        self.skipping = False
+        self.for_loop_level -= 1
+        self.skipCondition = False
+        if self.for_loop_level == 0:
 
-        iterated = None
-        if ctx.iterable().VARIABLE_NAME():
-            iterated = self.get_variable_value(str(ctx.iterable().VARIABLE_NAME()))
-            if type(iterated) not in (list, str):
-                iterated = None
-        elif ctx.iterable().STRING():
-            iterated = str(ctx.iterable().STRING())[1:-1]
-        #elif ctx.iterable().list_values():
+            # self.skipping = False
+            self.skipBlock = False
 
-            
-            #print(ctx.iterable().list_values().expr()[1].result)
-            #print(ctx.iterable().list_values().result)
-            # iterated = [expr.result for expr in ctx.iterable().list_values().expr()]
-            # iterated = ctx.iterable().list_values().expr().ctx.result
+            iterated = None
+            if ctx.iterable().VARIABLE_NAME():
+                iterated = self.get_variable_value(str(ctx.iterable().VARIABLE_NAME()))
+                if type(iterated) not in (list, str):
+                    iterated = None
+            elif ctx.iterable().STRING():
+                iterated = str(ctx.iterable().STRING())[1:-1]
+            elif ctx.iterable().list_values():
+                
+                iterated = [expr.result for expr in ctx.iterable().list_values().expr()]
 
-        # print(self.memory['scopes'])
-        if iterated is not None:
-            for i in iterated:
-                self.memory['scopes'].append({})
-                self.memory['scopes'][-1][str(ctx.VARIABLE_NAME())] = {'type': get_type_SPK(type(i)), 'value': i}
-                self.walker.walk(self, ctx.block())
-                self.memory['scopes'].pop(-1)
+            if iterated is not None:
+                for i in iterated:
+                    self.memory['scopes'].append({})
+                    self.memory['scopes'][-1][str(ctx.VARIABLE_NAME())] = {'type': get_type_SPK(type(i)), 'value': i}
+                    self.walker.walk(self, ctx.block())
+                    self.memory['scopes'].pop(-1)
 
-            
-        pass
-
-    def enterList_from_index(self, ctx:SPKParser.List_from_indexContext):
-        pass
-
-    # Exit a parse tree produced by SPKParser#list_from_index.
-    def exitList_from_index(self, ctx:SPKParser.List_from_indexContext):
         
-        Lista = self.get_variable_value(str(ctx.VARIABLE_NAME()))
-        if type(Lista) == list:
-            print( Lista[int(str(ctx.atom().INTEGER_NUMBER()))])
-        pass
-
-    def get_variable_value(self,variable_name): 
+    def get_variable_value(self, variable_name): 
+        #print(self.memory['scopes'])
         for scope in reversed(self.memory['scopes']):
             if variable_name in scope.keys():
                 value = scope[variable_name]['value']

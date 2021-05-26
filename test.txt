@@ -1,55 +1,19 @@
-CAŁKOWITA   x   =   (2);
-CAŁKOWITA  x2   =   22;
-UŁAMKOWA ulamek = 1.2;
-UŁAMKOWA ulamek12 = 1.43;
-WYPISZ ulamek12;
-WYPISZ ulamek;
-UŁAMKOWA ulamek2 = 0.1234; ?? jeden komentarz
-CAŁKOWITA   x3   =   221;
-?? drugi komentaarz
-
-LISTA l = [ 1 2   3 4 5  6 9];
-CAŁKOWITA   x3   =   221123;
-
-JEŻELI x < 2 TO { 
-    CAŁKOWITA x10 = 2; 
-}
-
-JEŻELI x < 2 TO { 
-    CAŁKOWITA x13 = 2;
-    CAŁKOWITA x14 = 2; 
-    JEŻELI x < 2 TO { 
-        CAŁKOWITA x13 = 2;
-        CAŁKOWITA x14 = 2; 
-    }
-}
-
-JEŻELI x > 0 TO {
-    x29 = 2;
-}
-
-DLA i W [1 2 3 4] zmienna = 8;
-
-DLA j W lista {
-    zmienna = 8;
-    CAŁKOWITA x21 = 2;
-} 
+LISTA L = [1,7,2,9,4,0,12];
+CAŁKOWITA index = 5;
+L[index+1] = 2;
+WYPISZ L[index+1];
 
 
-CAŁKOWITA   x4   =   221123;
 
-WYPISZ "zbychoŁudy";
-WYPISZ x20;
-WYPISZ x2;
 
-CAŁKOWITA scopetest = 1;
-WYPISZ scopetest;
 
-JEŻELI x < 2 TO {
-    CAŁKOWITA scopetest = 2;
-    WYPISZ scopetest;
-}
-WYPISZ scopetest;
+
+
+
+
+
+
+
 
 
 

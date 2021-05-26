@@ -1,8 +1,17 @@
 UŁAMKOWA x = 1.5;
-DOPÓKI x < 10 TO{
+UŁAMKOWA y = 1.7;
+DOPÓKI x < 100 TO{
 	WYPISZ x;
 	x = x + 1;
+	DOPÓKI y < 10 TO{
+	WYPISZ y;
+	y = y + 1;
+	
 }
+y = x + 0.2;
+}
+
+
 
 
 

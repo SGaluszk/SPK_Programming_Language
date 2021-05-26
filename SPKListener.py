@@ -170,12 +170,12 @@ class SPKListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by SPKParser#list_from_index.
-    def enterList_from_index(self, ctx:SPKParser.List_from_indexContext):
+    # Enter a parse tree produced by SPKParser#list_element.
+    def enterList_element(self, ctx:SPKParser.List_elementContext):
         pass
 
-    # Exit a parse tree produced by SPKParser#list_from_index.
-    def exitList_from_index(self, ctx:SPKParser.List_from_indexContext):
+    # Exit a parse tree produced by SPKParser#list_element.
+    def exitList_element(self, ctx:SPKParser.List_elementContext):
         pass
 
 
@@ -185,6 +185,15 @@ class SPKListener(ParseTreeListener):
 
     # Exit a parse tree produced by SPKParser#list_values.
     def exitList_values(self, ctx:SPKParser.List_valuesContext):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#list_index.
+    def enterList_index(self, ctx:SPKParser.List_indexContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#list_index.
+    def exitList_index(self, ctx:SPKParser.List_indexContext):
         pass
 
 
