@@ -1,0 +1,15 @@
+CAŁKOWITA wynik = 1;
+LISTA L = [OD 1 DO 10];
+CAŁKOWITA N = 5;
+
+    DLA i W [1,2,3] {
+        wynik = wynik * i;
+    }
+WYPISZ wynik;
+
+
+
+
+
+
+

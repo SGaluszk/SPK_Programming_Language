@@ -62,6 +62,15 @@ class SPKListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SPKParser#range_.
+    def enterRange_(self, ctx:SPKParser.Range_Context):
+        pass
+
+    # Exit a parse tree produced by SPKParser#range_.
+    def exitRange_(self, ctx:SPKParser.Range_Context):
+        pass
+
+
     # Enter a parse tree produced by SPKParser#condition_block.
     def enterCondition_block(self, ctx:SPKParser.Condition_blockContext):
         pass
@@ -86,6 +95,15 @@ class SPKListener(ParseTreeListener):
 
     # Exit a parse tree produced by SPKParser#block.
     def exitBlock(self, ctx:SPKParser.BlockContext):
+        pass
+
+
+    # Enter a parse tree produced by SPKParser#fblock.
+    def enterFblock(self, ctx:SPKParser.FblockContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#fblock.
+    def exitFblock(self, ctx:SPKParser.FblockContext):
         pass
 
 

@@ -13,14 +13,15 @@ for_loop : FOR VARIABLE_NAME IN iterable block;
 
 print_ : PRINT_ expr SEP;
 
+range_:  OSQBRACE FROM expr TO expr CSQBRACE;
 
 
 condition_block : condition THEN_ block;
 condition: expr;
 
 block : OBRACE block CBRACE | OBRACE bigStmt+ CBRACE;
-
-function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR  block ;
+fblock : block;
+function_ : FUN_ VARIABLE_NAME OPAR arguments CPAR  fblock ;
 // function_body: OBRACE bigStmt+ CBRACE;
 
 function_exec : VARIABLE_NAME OPAR arguments_exec CPAR SEP;
@@ -47,6 +48,8 @@ FOR: 'DLA';
 IN: 'W';
 PRINT_: 'WYPISZ';
 LENGTH: 'D\u0141UGO\u015A\u0106';
+FROM: 'OD';
+TO: 'DO';
 
 expr
  : expr POW expr                        
@@ -69,12 +72,14 @@ atom
  | VARIABLE_NAME            
  | STRING  
  | BOOL_VALUE
+ | range_
  | list_values  
  | list_element  
  ;
 
 iterable
- : list_values    
+ : range_
+ | list_values    
  | STRING
  | VARIABLE_NAME
  ;

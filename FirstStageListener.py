@@ -28,7 +28,7 @@ class FirstStageListener(SPKListener):
         else:
             self.functions[function_name] = {
                 'arguments': [{'type': str(t), 'name': str(n)} for t, n in zip(ctx.arguments().TYPE_NAME(), ctx.arguments().VARIABLE_NAME())],
-                'block': ctx.block()
+                'block': ctx.fblock().block()
             }
 
     # def exitPrint_(self, ctx:SPKParser.Print_Context):

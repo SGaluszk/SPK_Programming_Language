@@ -1,7 +1,8 @@
 LISTA L = [1,7,2,9,4,0,12];
 CAŁKOWITA index = 5;
 L[index+1] = 2;
-WYPISZ L[index+1];
+WYPISZ "index to " ;
+
 
 
 

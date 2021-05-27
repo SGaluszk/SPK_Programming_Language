@@ -164,6 +164,14 @@ class SecondStageListener(SPKListener):
                             ctx.result = list_variable[index]
                         else:
                             print('BŁĄD: indeks musi być typu całkowitego.')
+                elif ctx.atom().range_():
+                    start = ctx.atom().range_().expr(0).result
+                    end = ctx.atom().range_().expr(1).result
+                    if type(start) == type(end) == int:
+                        ctx.result = list(range(start, end+1))
+                    else:
+                        print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
+                  
                 
                 else:
                     ctx.result = ctx.atom().expr().result
@@ -173,7 +181,6 @@ class SecondStageListener(SPKListener):
 
             elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
                 if ctx.MINUS():
-                    print("odejmuje")
                     ctx.result = ctx.expr(0).result - ctx.expr(1).result
                 elif ctx.PLUS():
                     ctx.result = ctx.expr(0).result + ctx.expr(1).result
@@ -285,8 +292,15 @@ class SecondStageListener(SPKListener):
             elif ctx.iterable().STRING():
                 iterated = str(ctx.iterable().STRING())[1:-1]
             elif ctx.iterable().list_values():
-                
                 iterated = [expr.result for expr in ctx.iterable().list_values().expr()]
+
+            elif ctx.iterable().range_():
+                start = ctx.iterable().range_().expr(0).result
+                end = ctx.iterable().range_().expr(1).result
+                if type(start) == type(end) == int:
+                    iterated = list(range(start, end+1))
+                else:
+                    print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
 
             if iterated is not None:
                 for i in iterated:
