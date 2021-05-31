@@ -116,6 +116,15 @@ class SPKListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SPKParser#returnable.
+    def enterReturnable(self, ctx:SPKParser.ReturnableContext):
+        pass
+
+    # Exit a parse tree produced by SPKParser#returnable.
+    def exitReturnable(self, ctx:SPKParser.ReturnableContext):
+        pass
+
+
     # Enter a parse tree produced by SPKParser#function_exec.
     def enterFunction_exec(self, ctx:SPKParser.Function_execContext):
         pass

@@ -1,6 +1,8 @@
 from SPKListener import SPKListener
 from SPKParser import SPKParser
 
+class ExceptionSPK(Exception):
+    pass
 
 class SecondStageListener(SPKListener):
 
@@ -14,13 +16,14 @@ class SecondStageListener(SPKListener):
         self.skipExpr = False
         self.skipBlock = False
         self.skipCondition = False
+        self.skipFBlock = False
         self.for_loop_level = 0
         self.while_loop_level = 0
         self.if_loop_level = 0
         print('SECOND STAGE')
 
     def exitDeclaration(self, ctx: SPKParser.DeclarationContext):  # CALKOWITA x = 2;
-        if not self.skipping:
+        if not self.skipping and not self.skipFBlock:
             if ctx.VARIABLE_NAME() not in self.memory['scopes'][-1].keys():
                 type_name = str(ctx.TYPE_NAME())
                 value = ctx.expr().result
@@ -32,7 +35,7 @@ class SecondStageListener(SPKListener):
                 print('This variable name is already used!')
 
     def exitAssignment(self, ctx: SPKParser.AssignmentContext):  # x = 2;
-        if not self.skipping:
+        if not self.skipping and not self.skipFBlock:
             for scope in reversed(self.memory['scopes']):
                 if str(ctx.VARIABLE_NAME()) in scope.keys():
                     type_name = scope[str(ctx.VARIABLE_NAME())]['type']
@@ -65,20 +68,21 @@ class SecondStageListener(SPKListener):
             print("BŁĄD: Nie możesz przypisać wartości do niezainicjowanej zmiennej")
 
     def enterBlock(self, ctx: SPKParser.BlockContext):
-        if self.skipBlock:
+        if self.skipBlock and not self.skipFBlock:
             self.skipping = True
             self.skipExpr = True
         self.memory['scopes'].append({})
 
     def exitBlock(self, ctx: SPKParser.BlockContext):
-        self.skipping = False
-        self.skipExpr = False
-        
+        if not self.skipFBlock:
+            self.skipping = False
+            self.skipExpr = False
+            
         self.memory['scopes'].pop(-1)
-        # print("Koniec lokalnego scope'a")
+            # print("Koniec lokalnego scope'a")
 
     def exitPrint_(self, ctx: SPKParser.Print_Context):
-        if not self.skipping:
+        if not self.skipping and not self.skipFBlock:
             if ctx.expr().result is not None:
                 print(f"WYPISANIE: {ctx.expr().result}")
 
@@ -89,9 +93,20 @@ class SecondStageListener(SPKListener):
     def exitFunction_(self, ctx:SPKParser.Function_Context):
         self.skipping = False
         self.skipExpr = False
+        
+      # Enter a parse tree produced by SPKParser#fblock.
+    def enterFblock(self, ctx:SPKParser.FblockContext):
+        self.skipFBlock = True
+
+    # Exit a parse tree produced by SPKParser#fblock.
+    def exitFblock(self, ctx:SPKParser.FblockContext):
+        self.skipFBlock = False
+
+    def enterFunction_exec(self, ctx:SPKParser.Function_execContext):
+        ctx.returned_value = None
 
     def exitFunction_exec(self, ctx:SPKParser.Function_execContext):
-        if not self.skipping:
+        if not self.skipping and not self.skipFBlock:
 
             function_name = str(ctx.VARIABLE_NAME())
             if function_name in self.memory['functions'].keys():
@@ -114,200 +129,232 @@ class SecondStageListener(SPKListener):
                         self.memory['scopes'][-1][arg['name']] = {'type': arg['type'], 'value': value}
                     else:
                         self.memory['scopes'].pop(-1)
-                        print("Niezgodność typów :(")
-                        return
+                        # print("Niezgodność typów :(")
+                        raise ExceptionSPK('Niezgodność typów :(')
 
-                self.walker.walk(self, f['block'])
+                if f['returned']:
+                    self.memory['scopes'][-1][f['returned']['name']] = {'type': f['returned']['type'], 'value': None}
+
+                    self.walker.walk(self, f['block'])
+                    returned_value = self.get_variable_value(f['returned']['name'])
+                    if correct_type(f['returned']['type'], returned_value):
+                        ctx.returned_value = returned_value
+                    else:
+                        print('BŁĄD: zmienna zwracana z funkcji jest innego typu')
+                    print(ctx.returned_value)
+
                 self.memory['scopes'].pop(-1)
 
             else:
                 print(f'Nie zainicjowano funkcji o nazwie {function_name}.')
 
     def enterExpr(self, ctx:SPKParser.ExprContext):
-        ctx.result = None
+        if not self.skipFBlock:
+            ctx.result = None
 
     def exitExpr(self, ctx:SPKParser.ExprContext):
-        if not self.skipExpr:
-            if not ctx.op and ctx.atom():
-                if ctx.atom().LENGTH():
-                    if ctx.atom().iterable().STRING():
-                        ctx.result = len(str(ctx.atom().iterable().STRING())[1:-1])
-                    elif ctx.atom().iterable().list_values():
-                        ctx.result = len(ctx.atom().iterable().list_values().expr())
-                    elif ctx.atom().iterable().VARIABLE_NAME():
-                        variable = self.get_variable_value(str(ctx.atom().iterable().VARIABLE_NAME()))
-                        if type(variable) in (list, str):
-                            ctx.result = len(variable)
+        if not self.skipFBlock:
+            if not self.skipExpr:
+                if not ctx.op and ctx.atom():
+                    if ctx.atom().LENGTH():
+                        if ctx.atom().iterable().STRING():
+                            ctx.result = len(str(ctx.atom().iterable().STRING())[1:-1])
+                        elif ctx.atom().iterable().list_values():
+                            ctx.result = len(ctx.atom().iterable().list_values().expr())
+                        elif ctx.atom().iterable().VARIABLE_NAME():
+                            variable = self.get_variable_value(str(ctx.atom().iterable().VARIABLE_NAME()))
+                            if type(variable) in (list, str):
+                                ctx.result = len(variable)
+                            else:
+                                print('BŁĄD: nie można obliczyć długości tej zmiennej.')
+                        
+                    elif ctx.atom().function_exec():
+                        returned_value = ctx.atom().function_exec().returned_value
+                        if returned_value:
+                            ctx.result = returned_value
                         else:
-                            print('BŁĄD: nie można obliczyć długości tej zmiennej.')
+                            print('BŁĄD: ta funkcja nic nie zwraca lub zwracana zmienna w funkcji nie została użyta.')
+
+                    elif ctx.atom().VARIABLE_NAME():
+                        variable_name = str(ctx.atom().VARIABLE_NAME())
+                        ctx.result = self.get_variable_value(variable_name)
+
+                    elif ctx.atom().INTEGER_NUMBER():
+                        ctx.result = int(str(ctx.atom().INTEGER_NUMBER()))
+                    elif ctx.atom().FLOAT_NUMBER():
+                        ctx.result = float(str(ctx.atom().FLOAT_NUMBER()))
+                    elif ctx.atom().STRING():
+                        ctx.result = str(ctx.atom().STRING())[1:-1]
+                    elif ctx.atom().BOOL_VALUE():
+                        ctx.result = True if str(ctx.atom().BOOL_VALUE()) == 'Prawda' else False
+                    elif ctx.atom().list_values():
+                        ctx.result = [expr.result for expr in ctx.atom().list_values().expr()]
+                    elif ctx.atom().list_element():
+                        list_variable = self.get_variable_value(str(ctx.atom().list_element().VARIABLE_NAME()))
+                        if type(list_variable) == list:
+                            index = ctx.atom().list_element().list_index().expr().result
+                            if type(index) == int:
+                                ctx.result = list_variable[index]
+                            else:
+                                print('BŁĄD: indeks musi być typu całkowitego.')
+                    elif ctx.atom().range_():
+                        start = ctx.atom().range_().expr(0).result
+                        end = ctx.atom().range_().expr(1).result
+                        if type(start) == type(end) == int:
+                            ctx.result = list(range(start, end+1))
+                        else:
+                            print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
                     
-
-                elif ctx.atom().VARIABLE_NAME():
-                    variable_name = str(ctx.atom().VARIABLE_NAME())
-                    ctx.result = self.get_variable_value(variable_name)
-
-                elif ctx.atom().INTEGER_NUMBER():
-                    ctx.result = int(str(ctx.atom().INTEGER_NUMBER()))
-                elif ctx.atom().FLOAT_NUMBER():
-                    ctx.result = float(str(ctx.atom().FLOAT_NUMBER()))
-                elif ctx.atom().STRING():
-                    ctx.result = str(ctx.atom().STRING())[1:-1]
-                elif ctx.atom().BOOL_VALUE():
-                    ctx.result = True if str(ctx.atom().BOOL_VALUE()) == 'Prawda' else False
-                elif ctx.atom().list_values():
-                    ctx.result = [expr.result for expr in ctx.atom().list_values().expr()]
-                elif ctx.atom().list_element():
-                    list_variable = self.get_variable_value(str(ctx.atom().list_element().VARIABLE_NAME()))
-                    if type(list_variable) == list:
-                        index = ctx.atom().list_element().list_index().expr().result
-                        if type(index) == int:
-                            ctx.result = list_variable[index]
-                        else:
-                            print('BŁĄD: indeks musi być typu całkowitego.')
-                elif ctx.atom().range_():
-                    start = ctx.atom().range_().expr(0).result
-                    end = ctx.atom().range_().expr(1).result
-                    if type(start) == type(end) == int:
-                        ctx.result = list(range(start, end+1))
+                    
                     else:
-                        print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
-                  
-                
-                else:
-                    ctx.result = ctx.atom().expr().result
+                        ctx.result = ctx.atom().expr().result
 
-            elif not ctx.op and ctx.MINUS():
-                ctx.result = -1 * ctx.expr(0).result
+                elif not ctx.op and ctx.MINUS():
+                    ctx.result = -1 * ctx.expr(0).result
 
-            elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
-                if ctx.MINUS():
-                    ctx.result = ctx.expr(0).result - ctx.expr(1).result
-                elif ctx.PLUS():
-                    ctx.result = ctx.expr(0).result + ctx.expr(1).result
-                elif ctx.MULT():
-                    ctx.result = ctx.expr(0).result * ctx.expr(1).result
-                elif ctx.DIV():
-                    ctx.result = ctx.expr(0).result / ctx.expr(1).result
-                elif ctx.LTEQ():
-                    ctx.result = ctx.expr(0).result <= ctx.expr(1).result
-                elif ctx.GTEQ():
-                    ctx.result = ctx.expr(0).result >= ctx.expr(1).result
-                elif ctx.LT():
-                    ctx.result = ctx.expr(0).result < ctx.expr(1).result 
-                elif ctx.GT():
-                    ctx.result = ctx.expr(0).result > ctx.expr(1).result
-                elif ctx.EQ():
-                    ctx.result = ctx.expr(0).result == ctx.expr(1).result
-                elif ctx.NEQ():
-                    ctx.result = ctx.expr(0).result != ctx.expr(1).result
+                elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
+                    if ctx.MINUS():
+                        ctx.result = ctx.expr(0).result - ctx.expr(1).result
+                    elif ctx.PLUS():
+                        ctx.result = ctx.expr(0).result + ctx.expr(1).result
+                    elif ctx.MULT():
+                        ctx.result = ctx.expr(0).result * ctx.expr(1).result
+                    elif ctx.DIV():
+                        ctx.result = ctx.expr(0).result / ctx.expr(1).result
+                    elif ctx.LTEQ():
+                        ctx.result = ctx.expr(0).result <= ctx.expr(1).result
+                    elif ctx.GTEQ():
+                        ctx.result = ctx.expr(0).result >= ctx.expr(1).result
+                    elif ctx.LT():
+                        ctx.result = ctx.expr(0).result < ctx.expr(1).result 
+                    elif ctx.GT():
+                        ctx.result = ctx.expr(0).result > ctx.expr(1).result
+                    elif ctx.EQ():
+                        ctx.result = ctx.expr(0).result == ctx.expr(1).result
+                    elif ctx.NEQ():
+                        ctx.result = ctx.expr(0).result != ctx.expr(1).result
                          
     # Enter a parse tree produced by SPKParser#condition.
     def enterCondition(self, ctx:SPKParser.ConditionContext):
-        self.skipExpr = False
-        self.skipping = False
-        self.skipBlock = False
-        if self.skipCondition:
-            self.skipExpr = True
+        if not self.skipFBlock:
+            self.skipExpr = False
+            self.skipping = False
+            self.skipBlock = False
+            if self.skipCondition:
+                self.skipExpr = True
 
     # Exit a parse tree produced by SPKParser#condition.
     def exitCondition(self, ctx:SPKParser.ConditionContext):
-        self.skipExpr = True
-        self.skipping = True
-        self.skipBlock = True
-        if self.skipCondition:
-            self.skipExpr = False
+        if not self.skipFBlock:
+            self.skipExpr = True
+            self.skipping = True
+            self.skipBlock = True
+            if self.skipCondition:
+                self.skipExpr = False
 
     def enterIf_stat(self, ctx:SPKParser.If_statContext):
-        self.skipExpr = True
-        self.skipping = True
-        self.skipBlock = True
-        self.if_loop_level += 1
+        if not self.skipFBlock:
+            self.skipExpr = True
+            self.skipping = True
+            self.skipBlock = True
+            self.if_loop_level += 1
         
 
     # Exit a parse tree produced by SPKParser#if_stat.
     def exitIf_stat(self, ctx:SPKParser.If_statContext):
-        self.skipExpr = False
-        self.skipping = False
-        self.skipBlock = False
-        self.if_loop_level -= 1
-        if self.if_loop_level == 0:
-            for cond_block in ctx.condition_block():
-                # print("siema, tu condition block")
-                # print(cond_block.condition().expr().result)
-                if cond_block.condition().expr().result:
-                    # print("kondycja spełniona")
-                    self.walker.walk(self, cond_block.block())
-                    return
-                
-            if ctx.block():
-                self.walker.walk(self, ctx.block())
-                # print(self.memory["scopes"])
+        if not self.skipFBlock:
+            self.skipExpr = False
+            self.skipping = False
+            self.skipBlock = False
+            self.if_loop_level -= 1
+            if self.if_loop_level == 0:
+                for cond_block in ctx.condition_block():
+                    # print("siema, tu condition block")
+                    # print(cond_block.condition().expr().result)
+                    if cond_block.condition().expr().result:
+                        # print("kondycja spełniona")
+                        self.walker.walk(self, cond_block.block())
+                        return
+                    
+                if ctx.block():
+                    self.walker.walk(self, ctx.block())
+                    # print(self.memory["scopes"])
     
 
     def enterWhile_stat(self, ctx):
-        self.while_loop_level += 1
-        # self.skipping = True
-        self.skipBlock = True
-        self.skipCondition = True
+        if not self.skipFBlock:
+            self.while_loop_level += 1
+            # self.skipping = True
+            self.skipBlock = True
+            self.skipCondition = True
 
     # Exit a parse tree produced by SPKParser#while_stat.
     def exitWhile_stat(self, ctx:SPKParser.While_statContext):
-        self.while_loop_level -= 1
-        self.skipCondition = False
-        if self.while_loop_level == 0:
 
-            
-            self.skipBlock = False
-            while ctx.expr().result:
-                self.walker.walk(self, ctx.block())
-                self.walker.walk(self, ctx.expr())
-        # while True:
-        #     if not ctx.expr().result:
-        #         break
-        #     self.walker.walk(self, ctx.block())
+        if not self.skipFBlock:
+            counter = 0
+            LIMIT = 1000
+
+            self.while_loop_level -= 1
+            self.skipCondition = False
+            if self.while_loop_level == 0:
+
+                
+                self.skipBlock = False
+                while ctx.expr().result:
+                    self.walker.walk(self, ctx.block())
+                    self.walker.walk(self, ctx.expr())
+                    counter+=1
+
+                    if counter == LIMIT:
+                        print('Przekroczono limit rekurencji.')
+                        break
+
             
             
 
     # Enter a parse tree produced by SPKParser#for_loop.
     def enterFor_loop(self, ctx:SPKParser.For_loopContext):
-        self.for_loop_level += 1
-        # self.skipping = True
-        self.skipBlock = True
-        self.skipCondition = True
+        if not self.skipFBlock:
+            self.for_loop_level += 1
+            # self.skipping = True
+            self.skipBlock = True
+            self.skipCondition = True
         
     # Exit a parse tree produced by SPKParser#for_loop.
     def exitFor_loop(self, ctx:SPKParser.For_loopContext):
-        self.for_loop_level -= 1
-        self.skipCondition = False
-        if self.for_loop_level == 0:
+        if not self.skipFBlock:
+            self.for_loop_level -= 1
+            self.skipCondition = False
+            if self.for_loop_level == 0:
 
-            # self.skipping = False
-            self.skipBlock = False
+                # self.skipping = False
+                self.skipBlock = False
 
-            iterated = None
-            if ctx.iterable().VARIABLE_NAME():
-                iterated = self.get_variable_value(str(ctx.iterable().VARIABLE_NAME()))
-                if type(iterated) not in (list, str):
-                    iterated = None
-            elif ctx.iterable().STRING():
-                iterated = str(ctx.iterable().STRING())[1:-1]
-            elif ctx.iterable().list_values():
-                iterated = [expr.result for expr in ctx.iterable().list_values().expr()]
+                iterated = None
+                if ctx.iterable().VARIABLE_NAME():
+                    iterated = self.get_variable_value(str(ctx.iterable().VARIABLE_NAME()))
+                    if type(iterated) not in (list, str):
+                        iterated = None
+                elif ctx.iterable().STRING():
+                    iterated = str(ctx.iterable().STRING())[1:-1]
+                elif ctx.iterable().list_values():
+                    iterated = [expr.result for expr in ctx.iterable().list_values().expr()]
 
-            elif ctx.iterable().range_():
-                start = ctx.iterable().range_().expr(0).result
-                end = ctx.iterable().range_().expr(1).result
-                if type(start) == type(end) == int:
-                    iterated = list(range(start, end+1))
-                else:
-                    print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
+                elif ctx.iterable().range_():
+                    start = ctx.iterable().range_().expr(0).result
+                    end = ctx.iterable().range_().expr(1).result
+                    if type(start) == type(end) == int:
+                        iterated = list(range(start, end+1))
+                    else:
+                        print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
 
-            if iterated is not None:
-                for i in iterated:
-                    self.memory['scopes'].append({})
-                    self.memory['scopes'][-1][str(ctx.VARIABLE_NAME())] = {'type': get_type_SPK(type(i)), 'value': i}
-                    self.walker.walk(self, ctx.block())
-                    self.memory['scopes'].pop(-1)
+                if iterated is not None:
+                    for i in iterated:
+                        self.memory['scopes'].append({})
+                        self.memory['scopes'][-1][str(ctx.VARIABLE_NAME())] = {'type': get_type_SPK(type(i)), 'value': i}
+                        self.walker.walk(self, ctx.block())
+                        self.memory['scopes'].pop(-1)
 
         
     def get_variable_value(self, variable_name): 

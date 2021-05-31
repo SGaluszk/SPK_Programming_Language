@@ -26,9 +26,18 @@ class FirstStageListener(SPKListener):
         if function_name in self.functions.keys():
             print('Funkcja o tej nazwie została już zainicjalizowana.')
         else:
+
+            if ctx.returnable():
+                returned_variable = str(ctx.returnable().VARIABLE_NAME())
+                returned_type = str(ctx.returnable().TYPE_NAME())
+                returned = {'type': returned_type, 'name': returned_variable}
+            else:
+                returned = None
+
             self.functions[function_name] = {
                 'arguments': [{'type': str(t), 'name': str(n)} for t, n in zip(ctx.arguments().TYPE_NAME(), ctx.arguments().VARIABLE_NAME())],
-                'block': ctx.fblock().block()
+                'block': ctx.fblock().block(),
+                'returned': returned
             }
 
     # def exitPrint_(self, ctx:SPKParser.Print_Context):

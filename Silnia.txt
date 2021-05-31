@@ -1,0 +1,28 @@
+FUNKCJA foo(CAŁKOWITA x){
+	foo(x);
+}
+foo(12);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

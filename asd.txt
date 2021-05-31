@@ -1,0 +1,30 @@
+FUNKCJA foo(CAŁKOWITA x) ZWRACA CAŁKOWITA y{
+	y = x + 1;
+}
+CAŁKOWITA x = foo(16.3);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
