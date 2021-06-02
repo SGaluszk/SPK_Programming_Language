@@ -17,6 +17,9 @@ class SecondStageListener(SPKListener):
         self.skipBlock = False
         self.skipCondition = False
         self.skipFBlock = False
+        self.break_on = False
+        self.inside_loop = False
+        self.latest_function_result = {'name': None, 'value': None}
         self.for_loop_level = 0
         self.while_loop_level = 0
         self.if_loop_level = 0
@@ -36,36 +39,42 @@ class SecondStageListener(SPKListener):
 
     def exitAssignment(self, ctx: SPKParser.AssignmentContext):  # x = 2;
         if not self.skipping and not self.skipFBlock:
-            for scope in reversed(self.memory['scopes']):
-                if str(ctx.VARIABLE_NAME()) in scope.keys():
-                    type_name = scope[str(ctx.VARIABLE_NAME())]['type']
-                    value = ctx.expr().result
-                    if ctx.list_index():
-                        if type_name == 'LISTA':
-                            index = ctx.list_index().expr().result
-                            if type(index) == int:
+            variable_name = str(ctx.VARIABLE_NAME())
+            value = ctx.expr().result
+            if self.latest_function_result['name'] == variable_name:
+                self.latest_function_result['value'] = value
+            else:
+                for scope in reversed(self.memory['scopes']):
+                    if variable_name in scope.keys():
+                        type_name = scope[variable_name]['type']
+                        if ctx.list_index():
+                            if type_name == 'LISTA':
+                                index = ctx.list_index().expr().result
+                                if type(index) == int:
 
-                                variable = scope[str(ctx.VARIABLE_NAME())]['value']
-                                if index < len(variable):
-                                    variable[index] = value
-                                    scope[str(ctx.VARIABLE_NAME())]['value'] = variable
+                                    variable = scope[variable_name]['value']
+                                    if index < len(variable):
+                                        variable[index] = value
+                                        scope[variable_name]['value'] = variable
+                                    else:
+                                        raise ExceptionSPK('Indeks listy poza zakresem.')
+                                        
                                 else:
-                                    print('BŁĄD: indeks listy poza zakresem.')
+                                    raise ExceptionSPK('Indeks musi być typu całkowitego.')
+
                             else:
-                                print('BŁĄD: indeks musi być typu całkowitego.')
-
+                                raise ExceptionSPK('Nie można odnieść się przez indeks do tej zmiennej. (object is not subscriptable hehe)')
+                            
                         else:
-                            print('BŁĄD: nie można odnieść się przez indeks do tej zmiennej. (object is not subscriptable hehe)')
 
-                    else:
+                            if correct_type(type_name, value):
+                                scope[variable_name]['value'] = value
+                            else:
+                                raise ExceptionSPK(f'Brak zgodności typów danych. Podano ({type(value)}), oczekiwano wartość typu {type_name}.')
 
-                        if correct_type(type_name, value):
-                            scope[str(ctx.VARIABLE_NAME())]['value'] = value
-                        else:
-                            print(f'BŁĄD: Brak zgodności typów danych. Podano ({type(value)}), oczekiwano wartość typu {type_name}.')
+                        return
+                raise ExceptionSPK('Nie możesz przypisać wartości do niezainicjowanej zmiennej.')
 
-                    return
-            print("BŁĄD: Nie możesz przypisać wartości do niezainicjowanej zmiennej")
 
     def enterBlock(self, ctx: SPKParser.BlockContext):
         if self.skipBlock and not self.skipFBlock:
@@ -84,7 +93,13 @@ class SecondStageListener(SPKListener):
     def exitPrint_(self, ctx: SPKParser.Print_Context):
         if not self.skipping and not self.skipFBlock:
             if ctx.expr().result is not None:
-                print(f"WYPISANIE: {ctx.expr().result}")
+                result = ctx.expr().result
+                if type(result) == bool:
+                    if result:
+                        result = 'Prawda'
+                    else:
+                        result = 'Fałsz'
+                print(f"WYPISANIE: {result}")
 
     def enterFunction_(self, ctx:SPKParser.Function_Context):
         self.skipping = True
@@ -103,11 +118,11 @@ class SecondStageListener(SPKListener):
         self.skipFBlock = False
 
     def enterFunction_exec(self, ctx:SPKParser.Function_execContext):
-        ctx.returned_value = None
+        if not self.skipping:
+            ctx.returned_value = None
 
     def exitFunction_exec(self, ctx:SPKParser.Function_execContext):
         if not self.skipping and not self.skipFBlock:
-
             function_name = str(ctx.VARIABLE_NAME())
             if function_name in self.memory['functions'].keys():
                 print(f'Wywołanie funkcji {function_name}')
@@ -123,25 +138,27 @@ class SecondStageListener(SPKListener):
                 self.memory['scopes'].append({})
 
                 for arg, arg_exec in zip(f['arguments'], ctx.arguments_exec().expr()):
-
+                    
                     value = arg_exec.result
                     if correct_type(arg['type'], value):
                         self.memory['scopes'][-1][arg['name']] = {'type': arg['type'], 'value': value}
                     else:
                         self.memory['scopes'].pop(-1)
-                        # print("Niezgodność typów :(")
-                        raise ExceptionSPK('Niezgodność typów :(')
+                        raise ExceptionSPK('Niezgodność typów.')
 
                 if f['returned']:
-                    self.memory['scopes'][-1][f['returned']['name']] = {'type': f['returned']['type'], 'value': None}
-
+                    
+                    self.latest_function_result['name'] = f['returned']['name']
+                    
                     self.walker.walk(self, f['block'])
-                    returned_value = self.get_variable_value(f['returned']['name'])
+                    returned_value = self.latest_function_result['value']
+
                     if correct_type(f['returned']['type'], returned_value):
                         ctx.returned_value = returned_value
                     else:
-                        print('BŁĄD: zmienna zwracana z funkcji jest innego typu')
-                    print(ctx.returned_value)
+                        raise ExceptionSPK('Zmienna zwracana z funkcji jest innego typu')
+
+
 
                 self.memory['scopes'].pop(-1)
 
@@ -149,8 +166,9 @@ class SecondStageListener(SPKListener):
                 print(f'Nie zainicjowano funkcji o nazwie {function_name}.')
 
     def enterExpr(self, ctx:SPKParser.ExprContext):
-        if not self.skipFBlock:
-            ctx.result = None
+        ctx.result = None
+
+
 
     def exitExpr(self, ctx:SPKParser.ExprContext):
         if not self.skipFBlock:
@@ -166,16 +184,20 @@ class SecondStageListener(SPKListener):
                             if type(variable) in (list, str):
                                 ctx.result = len(variable)
                             else:
-                                print('BŁĄD: nie można obliczyć długości tej zmiennej.')
+                                raise ExceptionSPK('Nie można obliczyć długości tej zmiennej.')
                         
                     elif ctx.atom().function_exec():
                         returned_value = ctx.atom().function_exec().returned_value
-                        if returned_value:
-                            ctx.result = returned_value
+                        if not returned_value:
+                            ctx.result = self.latest_function_result['value']
                         else:
-                            print('BŁĄD: ta funkcja nic nie zwraca lub zwracana zmienna w funkcji nie została użyta.')
+                            ctx.result = returned_value
+                        #else:
+                        #    raise ExceptionSPK('Ta funkcja nic nie zwraca lub zwracana zmienna w funkcji nie została użyta.')
+
 
                     elif ctx.atom().VARIABLE_NAME():
+                        # self.walker.walk(self, ctx.atom().VARIABLE_NAME())
                         variable_name = str(ctx.atom().VARIABLE_NAME())
                         ctx.result = self.get_variable_value(variable_name)
 
@@ -190,20 +212,21 @@ class SecondStageListener(SPKListener):
                     elif ctx.atom().list_values():
                         ctx.result = [expr.result for expr in ctx.atom().list_values().expr()]
                     elif ctx.atom().list_element():
-                        list_variable = self.get_variable_value(str(ctx.atom().list_element().VARIABLE_NAME()))
-                        if type(list_variable) == list:
+                        variable = self.get_variable_value(str(ctx.atom().list_element().VARIABLE_NAME()))
+                        if type(variable) in (str, list):
                             index = ctx.atom().list_element().list_index().expr().result
                             if type(index) == int:
-                                ctx.result = list_variable[index]
+                                ctx.result = variable[index]
                             else:
-                                print('BŁĄD: indeks musi być typu całkowitego.')
+                                raise ExceptionSPK('Indeks musi być typu całkowitego.')
+
                     elif ctx.atom().range_():
                         start = ctx.atom().range_().expr(0).result
                         end = ctx.atom().range_().expr(1).result
                         if type(start) == type(end) == int:
                             ctx.result = list(range(start, end+1))
                         else:
-                            print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
+                            raise ExceptionSPK('[OD .. DO ..] oczekuje typu całkowitego.')
                     
                     
                     else:
@@ -212,7 +235,23 @@ class SecondStageListener(SPKListener):
                 elif not ctx.op and ctx.MINUS():
                     ctx.result = -1 * ctx.expr(0).result
 
+                elif not ctx.op and ctx.NOT():
+                    ctx.result = not ctx.expr(0).result
+
+                elif not ctx.op and ctx.POW() and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
+                    # for index in (0, 1):
+                    # #     if ctx.expr(index).atom().VARIABLE_NAME():
+                    #     self.walker.walk(self, ctx.expr(index))
+                    ctx.result = pow(ctx.expr(0).result, ctx.expr(1).result)
+
                 elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
+                    #print(ctx.expr(0).getTypedRuleContexts())
+                    #print(ctx.expr(0).getChild())
+                    #print(ctx.expr(0).children)
+                    # for index in (0, 1):
+                    #     # if ctx.expr(index).atom().VARIABLE_NAME():
+                    #     self.walker.walk(self, ctx.expr(index))
+
                     if ctx.MINUS():
                         ctx.result = ctx.expr(0).result - ctx.expr(1).result
                     elif ctx.PLUS():
@@ -233,6 +272,10 @@ class SecondStageListener(SPKListener):
                         ctx.result = ctx.expr(0).result == ctx.expr(1).result
                     elif ctx.NEQ():
                         ctx.result = ctx.expr(0).result != ctx.expr(1).result
+                elif ctx.AND():
+                    ctx.result = ctx.expr(0).result and ctx.expr(1).result
+                elif ctx.OR():
+                    ctx.result = ctx.expr(0).result or ctx.expr(1).result
                          
     # Enter a parse tree produced by SPKParser#condition.
     def enterCondition(self, ctx:SPKParser.ConditionContext):
@@ -279,12 +322,13 @@ class SecondStageListener(SPKListener):
                 if ctx.block():
                     self.walker.walk(self, ctx.block())
                     # print(self.memory["scopes"])
+            
     
 
     def enterWhile_stat(self, ctx):
         if not self.skipFBlock:
             self.while_loop_level += 1
-            # self.skipping = True
+            self.inside_loop = True
             self.skipBlock = True
             self.skipCondition = True
 
@@ -305,19 +349,23 @@ class SecondStageListener(SPKListener):
                     self.walker.walk(self, ctx.block())
                     self.walker.walk(self, ctx.expr())
                     counter+=1
-
+                    if self.break_on:
+                        self.skipping = False
+                        self.break_on = False
+                        break
                     if counter == LIMIT:
                         print('Przekroczono limit rekurencji.')
                         break
+            self.inside_loop = False
 
-            
+
             
 
     # Enter a parse tree produced by SPKParser#for_loop.
     def enterFor_loop(self, ctx:SPKParser.For_loopContext):
         if not self.skipFBlock:
             self.for_loop_level += 1
-            # self.skipping = True
+            self.inside_loop = True
             self.skipBlock = True
             self.skipCondition = True
         
@@ -342,12 +390,12 @@ class SecondStageListener(SPKListener):
                     iterated = [expr.result for expr in ctx.iterable().list_values().expr()]
 
                 elif ctx.iterable().range_():
-                    start = ctx.iterable().range_().expr(0).result
-                    end = ctx.iterable().range_().expr(1).result
+                    start = int(ctx.iterable().range_().expr(0).result)
+                    end = int(ctx.iterable().range_().expr(1).result)
                     if type(start) == type(end) == int:
                         iterated = list(range(start, end+1))
                     else:
-                        print('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
+                        raise ExceptionSPK('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
 
                 if iterated is not None:
                     for i in iterated:
@@ -355,8 +403,26 @@ class SecondStageListener(SPKListener):
                         self.memory['scopes'][-1][str(ctx.VARIABLE_NAME())] = {'type': get_type_SPK(type(i)), 'value': i}
                         self.walker.walk(self, ctx.block())
                         self.memory['scopes'].pop(-1)
+                        if self.break_on:
+                            self.skipping = False
+                            self.break_on = False
+                            break
 
-        
+                self.inside_loop = False
+                     
+
+            
+
+    # Enter a parse tree produced by SPKParser#break_.
+    def enterBreak_(self, ctx:SPKParser.Break_Context):
+        if not self.skipping:
+            if self.inside_loop:
+                self.break_on = True
+                self.skipping = True
+            else:
+                raise ExceptionSPK('Użyto stopu poza pętlą.')
+
+
     def get_variable_value(self, variable_name): 
         #print(self.memory['scopes'])
         for scope in reversed(self.memory['scopes']):
@@ -365,7 +431,7 @@ class SecondStageListener(SPKListener):
                 return value
 
         # throw jakiś error
-        print(f'BŁĄD: Zmienna {variable_name} nie istnieje.')
+        raise ExceptionSPK(f'Zmienna {variable_name} nie istnieje.')
         return None
 
     

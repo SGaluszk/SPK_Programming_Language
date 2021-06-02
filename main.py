@@ -3,8 +3,7 @@ from SPKLexer import SPKLexer
 from SPKListener import SPKListener
 from SPKParser import SPKParser
 from FirstStageListener import FirstStageListener
-from SecondStageListener import SecondStageListener
-from SecondStageListener import ExceptionSPK
+from SecondStageListener import SecondStageListener, ExceptionSPK
 import sys
 
 def pretty_printing(obj):
@@ -19,7 +18,7 @@ def pretty_printing(obj):
 
 def main_SPK(filename):
 
-    name = filename + '.txt'
+    name = filename + '.spk'
     data = open(name, 'r', encoding="UTF-8").read()
     inputStream = InputStream(data)
     lexer = SPKLexer(inputStream)
@@ -36,6 +35,8 @@ def main_SPK(filename):
         walker.walk(listener2, tree)
     except ExceptionSPK as e:
         print(e)
+    except Exception:
+        pass
     
     output_scopes = pretty_printing(listener2.memory['scopes'])
 

@@ -170,6 +170,15 @@ class SPKListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SPKParser#break_.
+    def enterBreak_(self, ctx:SPKParser.Break_Context):
+        pass
+
+    # Exit a parse tree produced by SPKParser#break_.
+    def exitBreak_(self, ctx:SPKParser.Break_Context):
+        pass
+
+
     # Enter a parse tree produced by SPKParser#expr.
     def enterExpr(self, ctx:SPKParser.ExprContext):
         pass

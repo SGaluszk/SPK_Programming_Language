@@ -3,7 +3,7 @@ grammar SPK;
 program : function_* bigStmt* EOF;
 
 
-bigStmt : (if_stat | while_stat | for_loop | declaration SEP | assignment SEP | print_ SEP | function_exec SEP);
+bigStmt : (if_stat | while_stat | for_loop | declaration SEP | assignment SEP | print_ SEP | function_exec SEP | break_ SEP);
 
 // if_ : IF_ condition_block THEN_ block;
 if_stat : IF_ condition_block (ELSE IF_ condition_block)* (ELSE block)?;
@@ -32,6 +32,7 @@ arguments_exec : ((expr ',')* expr)?;
 declaration : TYPE_NAME VARIABLE_NAME ASSIGN expr ;
 assignment : VARIABLE_NAME list_index? ASSIGN expr ;
 
+break_: BREAK_;
 
 TYPE_NAME : (INT | LIST | FLOATING | STRING_ | BOOL_ );
 BOOL_ : 'LOGICZNA';
@@ -51,17 +52,18 @@ LENGTH: 'D\u0141UGO\u015A\u0106';
 FROM: 'OD';
 TO: 'DO';
 RETURNS: 'ZWRACA';
+BREAK_: 'STOP';
 
 expr
  : expr POW expr                        
- | MINUS expr                           
- | NOT expr                             
  | expr op=(MULT | DIV | MOD) expr      
  | expr op=(PLUS | MINUS) expr          
  | expr op=(LTEQ | GTEQ | LT | GT) expr 
- | expr op=(EQ | NEQ) expr              
- | expr AND expr                        
- | expr OR expr                         
+ | expr op=(EQ | NEQ) expr  
+ | expr AND expr   
+ | expr OR expr           
+ | MINUS expr                           
+ | NOT expr            
  | atom
  ;
 
@@ -88,6 +90,23 @@ iterable
 BOOL_VALUE : 'Prawda' | 'Fa\u0142sz';
 
 
+OR : 'LUB';
+AND : 'ORAZ';
+EQ : '==';
+NEQ : '!=';
+GT : '>';
+LT : '<';
+GTEQ : '>=';
+LTEQ : '<=';
+PLUS : '+';
+MINUS : '-';
+MULT : '*';
+DIV : '/';
+MOD : '%';
+POW : '^';
+NOT : '!';
+
+
 VARIABLE_NAME
  : [a-zA-Z_\u00D3\u0104\u0105\u0106\u0107\u0118\u0119\u0141\u0142\u0143\u0144\u015A\u015B\u0179\u017A\u017B\u017C\u00F3] 
  [a-zA-Z_0-9\u00D3\u0104\u0105\u0106\u0107\u0118\u0119\u0141\u0142\u0143\u0144\u015A\u015B\u0179\u017A\u017B\u017C\u00F3]*
@@ -104,22 +123,6 @@ list_index: OSQBRACE expr CSQBRACE;
 NON_ZERO_DIGIT : [1-9];
 DIGIT : [0-9];
 
-
-OR : 'LUB';
-AND : 'I';
-EQ : '==';
-NEQ : '!=';
-GT : '>';
-LT : '<';
-GTEQ : '>=';
-LTEQ : '<=';
-PLUS : '+';
-MINUS : '-';
-MULT : '*';
-DIV : '/';
-MOD : '%';
-POW : '^';
-NOT : '!';
 
 
 ASSIGN : '=';

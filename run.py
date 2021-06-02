@@ -15,12 +15,14 @@ filename = ''
 filepath = ''
 
 def open_file():
+    global filepath
     """Open a file for editing."""
     filepath = askopenfilename(
-        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+        filetypes=[("SPK Files", "*.spk"), ("All Files", "*.*")]
     )
     if not filepath:
         return
+    print("Robię open, oto filepath: " + str(filepath))
     txt_edit.delete(1.0, tk.END)
     with open(filepath, "r",encoding="UTF-8") as input_file:
         text = input_file.read()
@@ -32,22 +34,25 @@ def open_file():
 
 def save_file():
     """Save the current file as a new file."""
-    
+
+    global filepath
     filepath = asksaveasfilename(
-        defaultextension="txt",
-        filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")],
+        defaultextension="spk",
+        filetypes=[("SPK Files", "*.spk"), ("All Files", "*.*")],
     )
     if not filepath:
         return
     with open(filepath, "w",encoding="UTF-8") as output_file:
+        print("Robię save as, oto filepath: " + str(filepath))
         text = txt_edit.get(1.0, tk.END)
         output_file.write(text)
     window.title(f"SPK Grammar Learning App - {filepath}")
 
 
 def save():
+    print("Robię save, oto filepath: " + str(filepath))
     """Save the current file."""
-    filepath = filename+'.txt'
+    #filepath = filename+'.spk'
     if not filepath:
         return
     with open(filepath, "w",encoding="UTF-8") as output_file:
@@ -81,11 +86,11 @@ window.geometry("1100x800")
 
 window.title("SPK Grammar Learning App")
 window.rowconfigure(0, minsize=800, weight=1)
-window.columnconfigure(1, minsize=400, weight=1)
-window.columnconfigure(2, minsize=400, weight=1)
+window.columnconfigure(1, minsize=400, weight=4)
+window.columnconfigure(2, minsize=400, weight=4)
 window.columnconfigure(3, minsize=100, weight=1)
 
-txt_edit = tk.Text(window)
+txt_edit = tk.Text(window, undo = True)
 txt_output = tk.Text(window, state = "disabled")
 txt_data = tk.Text(window, state = "disabled")
 
