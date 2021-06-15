@@ -5,7 +5,7 @@ CAŁKOWITA counter = 0;
 CAŁKOWITA next = 0;
 
 JEŻELI n <= 0 TO {
-	WYPISZ "Podany argument musi być dodatni!";
+	WYPISZ "Podany argument musi być dodatni!"; ??siema
 } INACZEJ {
 	DOPÓKI counter <= n TO {
 		WYPISZ n1;
@@ -15,6 +15,7 @@ JEŻELI n <= 0 TO {
 		counter = counter+1;
 	}
 }
+
 
 
 

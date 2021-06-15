@@ -7,36 +7,15 @@ DLA i W [OD 0 DO DŁUGOŚĆ(N)/2 -1]{
 
 }
 }
-CAŁKOWITA X = -1;
-LOGICZNA P = Prawda;
 
-WYPISZ X<2 ORAZ X < 4 LUB X < -10; 
-JEŻELI ( X<2 ORAZ X<3 ) TO {
-	WYPISZ "IF";
-
-
-	
-}
-INACZEJ JEŻELI (X<1) TO{
-	WYPISZ "IF ELSE";
-}
-INACZEJ{
-	WYPISZ "ELSE";
+FUNKCJA f() ZWRACA CAŁKOWITA wynik {
+wynik = 7;
 }
 
+NAPIS n = "Wywołanie nr " + 1;
+WYPISZ n;
 
-JEŻELI (P )TO {
-WYPISZ "PRAWDA";
-}
-INACZEJ{
-WYPISZ "FAŁSZ";
-}
 
-LISTA N = ["K","A","J","A","K"];
-NAPIS M = "KAJAR";
-LOGICZNA A = Palindrom(M);
-		
-WYPISZ A ;
 
 
 

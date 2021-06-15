@@ -1,8 +1,16 @@
 from SPKListener import SPKListener
 from SPKParser import SPKParser
 
+
 class ExceptionSPK(Exception):
-    pass
+    # pass
+    def __init__(self, message, line):
+        self.message = message
+        self.line = line
+
+    def __str__(self):
+        return f"BŁĄD! Linia {self.line}: {self.message}"
+
 
 class SecondStageListener(SPKListener):
 
@@ -23,7 +31,7 @@ class SecondStageListener(SPKListener):
         self.for_loop_level = 0
         self.while_loop_level = 0
         self.if_loop_level = 0
-        print('SECOND STAGE')
+        # print('SECOND STAGE')
 
     def exitDeclaration(self, ctx: SPKParser.DeclarationContext):  # CALKOWITA x = 2;
         if not self.skipping and not self.skipFBlock:
@@ -33,9 +41,9 @@ class SecondStageListener(SPKListener):
                 if correct_type(type_name, value):
                     self.memory['scopes'][-1][str(ctx.VARIABLE_NAME())] = {'type': type_name, 'value': value}
                 else:
-                    print(f'Przypisanie niewłaściwych danych ({type(value)}), oczekiwano wartość typu {type_name}.')
+                    raise ExceptionSPK(f'Brak zgodności typów danych. Podano zmienną typu {get_type_SPK(type(value))}, oczekiwano wartość typu {type_name}.', ctx.start.line)
             else:
-                print('This variable name is already used!')
+                raise ExceptionSPK('Istnieje już zmienna o tej nazwie.', ctx.start.line)
 
     def exitAssignment(self, ctx: SPKParser.AssignmentContext):  # x = 2;
         if not self.skipping and not self.skipFBlock:
@@ -57,24 +65,23 @@ class SecondStageListener(SPKListener):
                                         variable[index] = value
                                         scope[variable_name]['value'] = variable
                                     else:
-                                        raise ExceptionSPK('Indeks listy poza zakresem.')
+                                        raise ExceptionSPK('Indeks listy poza zakresem.', ctx.start.line)
                                         
                                 else:
-                                    raise ExceptionSPK('Indeks musi być typu całkowitego.')
+                                    raise ExceptionSPK('Indeks musi być typu całkowitego.', ctx.start.line)
 
                             else:
-                                raise ExceptionSPK('Nie można odnieść się przez indeks do tej zmiennej. (object is not subscriptable hehe)')
+                                raise ExceptionSPK('Nie można odnieść się przez indeks do tej zmiennej.', ctx.start.line)
                             
                         else:
 
                             if correct_type(type_name, value):
                                 scope[variable_name]['value'] = value
                             else:
-                                raise ExceptionSPK(f'Brak zgodności typów danych. Podano ({type(value)}), oczekiwano wartość typu {type_name}.')
+                                raise ExceptionSPK(f'Brak zgodności typów danych. Podano ({get_type_SPK(type(value))}), oczekiwano wartość typu {type_name}.', ctx.start.line)
 
                         return
-                raise ExceptionSPK('Nie możesz przypisać wartości do niezainicjowanej zmiennej.')
-
+                raise ExceptionSPK('Nie możesz przypisać wartości do niezainicjowanej zmiennej.', ctx.start.line)
 
     def enterBlock(self, ctx: SPKParser.BlockContext):
         if self.skipBlock and not self.skipFBlock:
@@ -132,9 +139,8 @@ class SecondStageListener(SPKListener):
                 expected_len = len(f['arguments'])
                 actual_len = len(ctx.arguments_exec().expr())
                 if expected_len != actual_len:
-                    print(f'Nieprawidłowa liczba argumentów. Oczekiwano {expected_len}, otrzymano {actual_len}.')
-                    return
-    
+                    raise ExceptionSPK(f'Nieprawidłowa liczba argumentów. Oczekiwano {expected_len}, otrzymano {actual_len}.', ctx.start.line)
+
                 self.memory['scopes'].append({})
 
                 for arg, arg_exec in zip(f['arguments'], ctx.arguments_exec().expr()):
@@ -144,33 +150,121 @@ class SecondStageListener(SPKListener):
                         self.memory['scopes'][-1][arg['name']] = {'type': arg['type'], 'value': value}
                     else:
                         self.memory['scopes'].pop(-1)
-                        raise ExceptionSPK('Niezgodność typów.')
+                        raise ExceptionSPK('Niezgodność typów.', ctx.start.line)
 
                 if f['returned']:
-                    
                     self.latest_function_result['name'] = f['returned']['name']
                     
-                    self.walker.walk(self, f['block'])
+                self.walker.walk(self, f['block'])
+
+                if f['returned']:
                     returned_value = self.latest_function_result['value']
 
                     if correct_type(f['returned']['type'], returned_value):
                         ctx.returned_value = returned_value
                     else:
-                        raise ExceptionSPK('Zmienna zwracana z funkcji jest innego typu')
-
-
+                        raise ExceptionSPK(f"Zmienna zwracana z funkcji jest typu {f['returned']['type']}, a podano typ {get_type_SPK(type(returned_value))}.", ctx.start.line)
 
                 self.memory['scopes'].pop(-1)
 
             else:
-                print(f'Nie zainicjowano funkcji o nazwie {function_name}.')
+                raise ExceptionSPK(f'Nie zainicjowano funkcji o nazwie {function_name}.', ctx.start.line)
+
 
     def enterExpr(self, ctx:SPKParser.ExprContext):
         ctx.result = None
 
-
-
     def exitExpr(self, ctx:SPKParser.ExprContext):
+        operations = {
+            'MINUS': {
+                (int, int): lambda a, b: a-b,
+                (int, float): lambda a, b: a-b,
+                (float, int): lambda a, b: a-b,
+                (float, float): lambda a, b: a-b
+            },
+            'PLUS': {
+                (int, int): lambda a, b: a+b,
+                (int, float): lambda a, b: a+b,
+                (float, int): lambda a, b: a+b,
+                (float, float): lambda a, b: a+b,
+                (str, int): lambda a, b: a+str(b),
+                (int, str): lambda a, b: str(a)+b,
+                (str, float): lambda a, b: a+str(b),
+                (float, str): lambda a, b: str(a)+b,
+                (str, str): lambda a, b: a+b,
+                (list, list): lambda a, b: a+b
+            },
+            'MULT': {
+                (int, int): lambda a, b: a * b,
+                (int, float): lambda a, b: a * b,
+                (float, int): lambda a, b: a * b,
+                (float, float): lambda a, b: a * b,
+                (str, int): lambda a, b: a * b,
+                (int, str): lambda a, b: a * b,
+                (int, list): lambda a, b: a * b,
+                (list, str): lambda a, b: a * b
+            },
+            'DIV': {
+                (int, int): lambda a, b: a / b,
+                (int, float): lambda a, b: a / b,
+                (float, int): lambda a, b: a / b,
+                (float, float): lambda a, b: a / b
+            },
+            'LTEQ': {
+                (int, int): lambda a, b: a <= b,
+                (int, float): lambda a, b: a <= b,
+                (float, int): lambda a, b: a <= b,
+                (float, float): lambda a, b: a <= b,
+                (list, list): lambda a, b: a <= b,
+                (str, str): lambda a, b: a <= b,
+                (bool, bool): lambda a, b: a <= b
+            },
+            'GTEQ': {
+                (int, int): lambda a, b: a >= b,
+                (int, float): lambda a, b: a >= b,
+                (float, int): lambda a, b: a >= b,
+                (float, float): lambda a, b: a >= b,
+                (list, list): lambda a, b: a >= b,
+                (str, str): lambda a, b: a >= b,
+                (bool, bool): lambda a, b: a >= b
+            },
+            'LT': {
+                (int, int): lambda a, b: a < b,
+                (int, float): lambda a, b: a < b,
+                (float, int): lambda a, b: a < b,
+                (float, float): lambda a, b: a < b,
+                (list, list): lambda a, b: a < b,
+                (str, str): lambda a, b: a < b,
+                (bool, bool): lambda a, b: a < b
+            },
+            'GT': {
+                (int, int): lambda a, b: a > b,
+                (int, float): lambda a, b: a > b,
+                (float, int): lambda a, b: a > b,
+                (float, float): lambda a, b: a > b,
+                (list, list): lambda a, b: a > b,
+                (str, str): lambda a, b: a > b,
+                (bool, bool): lambda a, b: a > b
+            },
+            'EQ': {
+                (int, int): lambda a, b: a == b,
+                (int, float): lambda a, b: a == b,
+                (float, int): lambda a, b: a == b,
+                (float, float): lambda a, b: a == b,
+                (list, list): lambda a, b: a == b,
+                (str, str): lambda a, b: a == b,
+                (bool, bool): lambda a, b: a == b
+            },
+            'NEQ': {
+                (int, int): lambda a, b: a != b,
+                (int, float): lambda a, b: a != b,
+                (float, int): lambda a, b: a != b,
+                (float, float): lambda a, b: a != b,
+                (list, list): lambda a, b: a != b,
+                (str, str): lambda a, b: a != b,
+                (bool, bool): lambda a, b: a != b
+            }
+        }
         if not self.skipFBlock:
             if not self.skipExpr:
                 if not ctx.op and ctx.atom():
@@ -180,11 +274,11 @@ class SecondStageListener(SPKListener):
                         elif ctx.atom().iterable().list_values():
                             ctx.result = len(ctx.atom().iterable().list_values().expr())
                         elif ctx.atom().iterable().VARIABLE_NAME():
-                            variable = self.get_variable_value(str(ctx.atom().iterable().VARIABLE_NAME()))
+                            variable = self.get_variable_value(str(ctx.atom().iterable().VARIABLE_NAME()), ctx.start.line)
                             if type(variable) in (list, str):
                                 ctx.result = len(variable)
                             else:
-                                raise ExceptionSPK('Nie można obliczyć długości tej zmiennej.')
+                                raise ExceptionSPK(f'Nie można obliczyć długości zmiennej typu {get_type_SPK(type(variable))}.', ctx.start.line)
                         
                     elif ctx.atom().function_exec():
                         returned_value = ctx.atom().function_exec().returned_value
@@ -199,7 +293,7 @@ class SecondStageListener(SPKListener):
                     elif ctx.atom().VARIABLE_NAME():
                         # self.walker.walk(self, ctx.atom().VARIABLE_NAME())
                         variable_name = str(ctx.atom().VARIABLE_NAME())
-                        ctx.result = self.get_variable_value(variable_name)
+                        ctx.result = self.get_variable_value(variable_name, ctx.start.line)
 
                     elif ctx.atom().INTEGER_NUMBER():
                         ctx.result = int(str(ctx.atom().INTEGER_NUMBER()))
@@ -212,13 +306,13 @@ class SecondStageListener(SPKListener):
                     elif ctx.atom().list_values():
                         ctx.result = [expr.result for expr in ctx.atom().list_values().expr()]
                     elif ctx.atom().list_element():
-                        variable = self.get_variable_value(str(ctx.atom().list_element().VARIABLE_NAME()))
+                        variable = self.get_variable_value(str(ctx.atom().list_element().VARIABLE_NAME()), ctx.start.line)
                         if type(variable) in (str, list):
                             index = ctx.atom().list_element().list_index().expr().result
                             if type(index) == int:
                                 ctx.result = variable[index]
                             else:
-                                raise ExceptionSPK('Indeks musi być typu całkowitego.')
+                                raise ExceptionSPK('Indeks musi być typu całkowitego.', ctx.start.line)
 
                     elif ctx.atom().range_():
                         start = ctx.atom().range_().expr(0).result
@@ -226,7 +320,7 @@ class SecondStageListener(SPKListener):
                         if type(start) == type(end) == int:
                             ctx.result = list(range(start, end+1))
                         else:
-                            raise ExceptionSPK('[OD .. DO ..] oczekuje typu całkowitego.')
+                            raise ExceptionSPK('[OD .. DO ..] oczekuje typu całkowitego.', ctx.start.line)
                     
                     
                     else:
@@ -245,33 +339,54 @@ class SecondStageListener(SPKListener):
                     ctx.result = pow(ctx.expr(0).result, ctx.expr(1).result)
 
                 elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
-                    #print(ctx.expr(0).getTypedRuleContexts())
-                    #print(ctx.expr(0).getChild())
-                    #print(ctx.expr(0).children)
-                    # for index in (0, 1):
-                    #     # if ctx.expr(index).atom().VARIABLE_NAME():
-                    #     self.walker.walk(self, ctx.expr(index))
 
                     if ctx.MINUS():
-                        ctx.result = ctx.expr(0).result - ctx.expr(1).result
+                        operation = 'MINUS'
+                        # ctx.result = ctx.expr(0).result - ctx.expr(1).result
                     elif ctx.PLUS():
-                        ctx.result = ctx.expr(0).result + ctx.expr(1).result
+                        operation = 'PLUS'
+
+                        # ctx.result = ctx.expr(0).result + ctx.expr(1).result
                     elif ctx.MULT():
-                        ctx.result = ctx.expr(0).result * ctx.expr(1).result
+                        operation = 'MULT'
+
+                        # ctx.result = ctx.expr(0).result * ctx.expr(1).result
                     elif ctx.DIV():
-                        ctx.result = ctx.expr(0).result / ctx.expr(1).result
+                        operation = 'DIV'
+
+                        # ctx.result = ctx.expr(0).result / ctx.expr(1).result
                     elif ctx.LTEQ():
-                        ctx.result = ctx.expr(0).result <= ctx.expr(1).result
+                        operation = 'LTEQ'
+
+                        # ctx.result = ctx.expr(0).result <= ctx.expr(1).result
                     elif ctx.GTEQ():
-                        ctx.result = ctx.expr(0).result >= ctx.expr(1).result
+                        operation = 'GTEQ'
+
+                        # ctx.result = ctx.expr(0).result >= ctx.expr(1).result
                     elif ctx.LT():
-                        ctx.result = ctx.expr(0).result < ctx.expr(1).result 
+                        operation = 'LT'
+
+                        # ctx.result = ctx.expr(0).result < ctx.expr(1).result
                     elif ctx.GT():
-                        ctx.result = ctx.expr(0).result > ctx.expr(1).result
+                        operation = 'GT'
+
+                        # ctx.result = ctx.expr(0).result > ctx.expr(1).result
                     elif ctx.EQ():
-                        ctx.result = ctx.expr(0).result == ctx.expr(1).result
+                        operation = 'EQ'
+
+                        # ctx.result = ctx.expr(0).result == ctx.expr(1).result
                     elif ctx.NEQ():
-                        ctx.result = ctx.expr(0).result != ctx.expr(1).result
+                        operation = 'NEQ'
+
+                        # ctx.result = ctx.expr(0).result != ctx.expr(1).result
+
+                    for types, function in operations[operation].items():
+                        if types == (type(ctx.expr(0).result), type(ctx.expr(1).result)):
+                            ctx.result = function(ctx.expr(0).result, ctx.expr(1).result)
+                            return
+                    raise ExceptionSPK(f'Nie można przeprowadzić operacji {operation_in_polish(operation)} na wartościach typu'
+                                       f' {get_type_SPK(type(ctx.expr(0).result))} i {get_type_SPK(type(ctx.expr(1).result))}.', ctx.start.line)
+
                 elif ctx.AND():
                     ctx.result = ctx.expr(0).result and ctx.expr(1).result
                 elif ctx.OR():
@@ -312,18 +427,12 @@ class SecondStageListener(SPKListener):
             self.if_loop_level -= 1
             if self.if_loop_level == 0:
                 for cond_block in ctx.condition_block():
-                    # print("siema, tu condition block")
-                    # print(cond_block.condition().expr().result)
                     if cond_block.condition().expr().result:
-                        # print("kondycja spełniona")
                         self.walker.walk(self, cond_block.block())
                         return
                     
                 if ctx.block():
                     self.walker.walk(self, ctx.block())
-                    # print(self.memory["scopes"])
-            
-    
 
     def enterWhile_stat(self, ctx):
         if not self.skipFBlock:
@@ -354,8 +463,7 @@ class SecondStageListener(SPKListener):
                         self.break_on = False
                         break
                     if counter == LIMIT:
-                        print('Przekroczono limit rekurencji.')
-                        break
+                        raise ExceptionSPK('Przekroczono limit rekurencji.', ctx.start.line)
             self.inside_loop = False
 
 
@@ -381,7 +489,7 @@ class SecondStageListener(SPKListener):
 
                 iterated = None
                 if ctx.iterable().VARIABLE_NAME():
-                    iterated = self.get_variable_value(str(ctx.iterable().VARIABLE_NAME()))
+                    iterated = self.get_variable_value(str(ctx.iterable().VARIABLE_NAME()), ctx.start.line)
                     if type(iterated) not in (list, str):
                         iterated = None
                 elif ctx.iterable().STRING():
@@ -395,7 +503,7 @@ class SecondStageListener(SPKListener):
                     if type(start) == type(end) == int:
                         iterated = list(range(start, end+1))
                     else:
-                        raise ExceptionSPK('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.')
+                        raise ExceptionSPK('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.', ctx.start.line)
 
                 if iterated is not None:
                     for i in iterated:
@@ -420,21 +528,18 @@ class SecondStageListener(SPKListener):
                 self.break_on = True
                 self.skipping = True
             else:
-                raise ExceptionSPK('Użyto stopu poza pętlą.')
+                raise ExceptionSPK('Użyto stopu poza pętlą.', ctx.start.line)
 
-
-    def get_variable_value(self, variable_name): 
-        #print(self.memory['scopes'])
+    def get_variable_value(self, variable_name, line):
         for scope in reversed(self.memory['scopes']):
             if variable_name in scope.keys():
                 value = scope[variable_name]['value']
                 return value
 
         # throw jakiś error
-        raise ExceptionSPK(f'Zmienna {variable_name} nie istnieje.')
+        raise ExceptionSPK(f'Zmienna {variable_name} nie istnieje.', line)
         return None
 
-    
 
 def get_type_SPK(python_type):
     if python_type == int:
@@ -459,3 +564,19 @@ def correct_type(variable_type: str, value):
         return type(value) == bool
     elif variable_type == 'LISTA':
         return type(value) == list
+
+
+def operation_in_polish(operation):
+    op_dict = {
+        'MINUS': 'ODEJMOWANIE',
+        'PLUS': 'DODAWANIE',
+        'MULT': 'MNOŻENIE',
+        'DIV': 'DZIELENIE',
+        'LTEQ': '<=',
+        'GTEQ': '>=',
+        'LT': '<',
+        'GT': '>',
+        'EQ': '==',
+        'NEQ': '!=',
+    }
+    return op_dict.get(operation, '')

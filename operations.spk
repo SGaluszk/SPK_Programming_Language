@@ -1,0 +1,52 @@
+WYPISZ 10-5;
+WYPISZ 10-5.5;
+WYPISZ 10.5-5;
+WYPISZ 10.5-5.1;
+
+WYPISZ 10+5;
+WYPISZ 10+5.5;
+WYPISZ 10.5+5;
+WYPISZ 10.5+5.1;
+
+WYPISZ "abc"+10;
+WYPISZ 10+"abc"+10;
+
+WYPISZ "abc"+10.5;
+WYPISZ 10.5+"abc";
+
+WYPISZ "abc" + "def";
+WYPISZ [1,2,3] + [4,5,6] + [7,8,9];
+
+WYPISZ 10*5;
+WYPISZ 10*5.5;
+WYPISZ 10.5*5;
+WYPISZ 10.5*5.1;
+WYPISZ "abc" * 5;
+WYPISZ 5 * "def";
+WYPISZ 10 * [0];
+
+WYPISZ 10/5;
+WYPISZ 10/5.5;
+WYPISZ 10.5/5;
+WYPISZ 10.5/5.1;
+
+WYPISZ "abc == abc";
+WYPISZ "abc" == "abc";
+
+WYPISZ "abc == def";
+WYPISZ "abc" == "def";
+
+WYPISZ "[1,2] == [1,2]";
+WYPISZ [1,2] == [1,2];
+LISTA lista = [1,2];
+WYPISZ lista == [1,2];
+
+WYPISZ "[1,2] == [1,2,3]";
+WYPISZ [1,2] == [1,2,3];
+
+
+
+
+
+
+

@@ -5,7 +5,7 @@ from SPKParser import SPKParser
 class FirstStageListener(SPKListener):
 
     def __init__(self):
-        print('FIRST STAGE')
+        # print('FIRST STAGE')
         self.functions = {}
 
     def exitFunction_(self, ctx:SPKParser.Function_Context):

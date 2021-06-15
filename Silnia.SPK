@@ -3,15 +3,27 @@ FUNKCJA Silnia ( CAŁKOWITA x ) ZWRACA CAŁKOWITA wynik{
 		wynik = 1;
 	}
 	INACZEJ{
-		wynik = Silnia(x-1) *x ;
+		wynik = Silnia(x-1) * x;
 		
 	}
 }
+FUNKCJA f(){
+WYPISZ "SIEMA";
+f();
+f();}
 
-
-CAŁKOWITA asd = Silnia(5);
+CAŁKOWITA asd = Silnia(7);
 WYPISZ asd;
 WYPISZ Silnia(3);
+
+
+
+
+f();
+
+
+
+
 
 
 

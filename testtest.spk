@@ -1,0 +1,10 @@
+FUNKCJA f(CAŁKOWITA in) ZWRACA CAŁKOWITA x{
+	x = in * 2;
+}
+
+??WYPISZ "ABC" * [1,2,3];
+??LOGICZNA l = f(2);
+WYPISZ DŁUGOŚĆ(5);
+
+
+

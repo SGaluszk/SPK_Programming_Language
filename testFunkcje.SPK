@@ -15,10 +15,12 @@ FUNKCJA f3(){
 }
 
 CAŁKOWITA x = 1;
-f1(x, 1);
-f1(1);
+
 f2("asd");
 WYPISZ X3;
+
+
+
 
 
 
