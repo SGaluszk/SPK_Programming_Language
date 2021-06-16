@@ -1,0 +1,13 @@
+FUNKCJA f() {
+  g();
+}
+
+
+FUNKCJA g() {
+  f();
+}
+
+f();
+
+
+

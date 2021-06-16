@@ -1,0 +1,19 @@
+DLA indeks W [OD 1 DO 10] {
+  WYPISZ "Wywołanie nr " + indeks;
+  JEŻELI indeks == 8 TO {
+    STOP;
+  }
+}
+
+funkc();
+
+
+
+
+
+
+
+
+
+
+

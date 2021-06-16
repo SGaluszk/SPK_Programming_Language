@@ -24,7 +24,6 @@ WYPISZ 10.5*5.1;
 WYPISZ "abc" * 5;
 WYPISZ 5 * "def";
 WYPISZ 10 * [0];
-
 WYPISZ 10/5;
 WYPISZ 10/5.5;
 WYPISZ 10.5/5;
@@ -44,6 +43,7 @@ WYPISZ lista == [1,2];
 WYPISZ "[1,2] == [1,2,3]";
 WYPISZ [1,2] == [1,2,3];
 
+WYPISZ x;
 
 
 

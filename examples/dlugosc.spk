@@ -1,0 +1,19 @@
+FUNKCJA DŁUGOŚĆ2(NAPIS napis) ZWRACA CAŁKOWITA dł {
+  dł = 0;
+  CAŁKOWITA TMP = 10;
+  DLA litera W napis {
+    WYPISZ litera;
+    dł = dł + 1;
+  }
+}
+
+WYPISZ DŁUGOŚĆ2("ABCDEFGHI");
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,84 @@
+FUNKCJA Silnia ( CAŁKOWITA x ) ZWRACA CAŁKOWITA wynik{
+	JEŻELI (x == 1 LUB x ==0 )TO{
+		wynik = 1;
+	}
+	INACZEJ{
+		wynik = Silnia(x-1) * x;
+		
+	}
+}
+
+CAŁKOWITA asd = Silnia(7);
+WYPISZ asd;
+WYPISZ Silnia(3);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

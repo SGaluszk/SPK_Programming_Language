@@ -21,7 +21,11 @@ def main_SPK(filename):
 
     output_scopes = "Zmienne globalne: \n"
     name = filename + '.spk'
-    data = open(name, 'r', encoding="UTF-8").read()
+    try:
+        data = open(name, 'r', encoding="UTF-8").read()
+    except FileNotFoundError:
+        print(f'BŁĄD! Nie znaleziono pliku {name}.')
+        return
     inputStream = InputStream(data)
 
     error_listener = ErrorListenerSPK()
@@ -52,11 +56,17 @@ def main_SPK(filename):
     except ExceptionSPK as e:
         print(e)
     except Exception as e:
-        print(e)
-        print('BŁĄD! Wystąpił niezidentyfikowany błąd.')
+        # print(e)
+        if str(e) == 'maximum recursion depth exceeded':
+            print('BŁĄD! Przekroczono limit głębokości rekursji.')
+        else:
+            print('BŁĄD! Wystąpił niezidentyfikowany błąd.')
 
     return output_scopes
 
 
 if __name__ == '__main__':
-    main_SPK(sys.argv[1])
+    if len(sys.argv) > 1:
+        main_SPK(sys.argv[1])
+    else:
+        print('BŁĄD! Nie podano nazwy pliku.')

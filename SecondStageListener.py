@@ -1,6 +1,6 @@
 from SPKListener import SPKListener
 from SPKParser import SPKParser
-
+import time
 
 class ExceptionSPK(Exception):
     # pass
@@ -41,7 +41,7 @@ class SecondStageListener(SPKListener):
                 if correct_type(type_name, value):
                     self.memory['scopes'][-1][str(ctx.VARIABLE_NAME())] = {'type': type_name, 'value': value}
                 else:
-                    raise ExceptionSPK(f'Brak zgodności typów danych. Podano zmienną typu {get_type_SPK(type(value))}, oczekiwano wartość typu {type_name}.', ctx.start.line)
+                    raise ExceptionSPK(f'Brak zgodności typów danych w deklaracji zmiennej. Podano zmienną typu {get_type_SPK(type(value))}, oczekiwano wartość typu {type_name}.', ctx.start.line)
             else:
                 raise ExceptionSPK('Istnieje już zmienna o tej nazwie.', ctx.start.line)
 
@@ -78,7 +78,8 @@ class SecondStageListener(SPKListener):
                             if correct_type(type_name, value):
                                 scope[variable_name]['value'] = value
                             else:
-                                raise ExceptionSPK(f'Brak zgodności typów danych. Podano ({get_type_SPK(type(value))}), oczekiwano wartość typu {type_name}.', ctx.start.line)
+                                raise ExceptionSPK(f'Brak zgodności typów danych w przypisaniu do zmiennej. '
+                                                   f'Podano zmienną typu {get_type_SPK(type(value))}, oczekiwano wartość typu {type_name}.', ctx.start.line)
 
                         return
                 raise ExceptionSPK('Nie możesz przypisać wartości do niezainicjowanej zmiennej.', ctx.start.line)
@@ -98,6 +99,7 @@ class SecondStageListener(SPKListener):
             # print("Koniec lokalnego scope'a")
 
     def exitPrint_(self, ctx: SPKParser.Print_Context):
+        # time.sleep(1)
         if not self.skipping and not self.skipFBlock:
             if ctx.expr().result is not None:
                 result = ctx.expr().result
@@ -132,7 +134,7 @@ class SecondStageListener(SPKListener):
         if not self.skipping and not self.skipFBlock:
             function_name = str(ctx.VARIABLE_NAME())
             if function_name in self.memory['functions'].keys():
-                print(f'Wywołanie funkcji {function_name}')
+                print(f'Wywołanie funkcji {function_name}.')
 
                 f = self.memory['functions'][function_name]
 
@@ -162,13 +164,15 @@ class SecondStageListener(SPKListener):
 
                     if correct_type(f['returned']['type'], returned_value):
                         ctx.returned_value = returned_value
+                    elif returned_value is None:
+                        raise ExceptionSPK(f"Funkcja nie używa zmiennej, którą zwraca.", ctx.start.line)
                     else:
                         raise ExceptionSPK(f"Zmienna zwracana z funkcji jest typu {f['returned']['type']}, a podano typ {get_type_SPK(type(returned_value))}.", ctx.start.line)
 
                 self.memory['scopes'].pop(-1)
 
             else:
-                raise ExceptionSPK(f'Nie zainicjowano funkcji o nazwie {function_name}.', ctx.start.line)
+                raise ExceptionSPK(f'Funkcja o nazwie {function_name} nie istnieje.', ctx.start.line)
 
 
     def enterExpr(self, ctx:SPKParser.ExprContext):
@@ -274,7 +278,8 @@ class SecondStageListener(SPKListener):
                         elif ctx.atom().iterable().list_values():
                             ctx.result = len(ctx.atom().iterable().list_values().expr())
                         elif ctx.atom().iterable().VARIABLE_NAME():
-                            variable = self.get_variable_value(str(ctx.atom().iterable().VARIABLE_NAME()), ctx.start.line)
+                            variable_name = str(ctx.atom().iterable().VARIABLE_NAME())
+                            variable = self.get_variable_value(variable_name, ctx.start.line)
                             if type(variable) in (list, str):
                                 ctx.result = len(variable)
                             else:
@@ -283,17 +288,22 @@ class SecondStageListener(SPKListener):
                     elif ctx.atom().function_exec():
                         returned_value = ctx.atom().function_exec().returned_value
                         if not returned_value:
-                            ctx.result = self.latest_function_result['value']
+                            function_result = self.latest_function_result['value']
+                            if function_result is not None:
+                                ctx.result = function_result
+                            else:
+                                raise ExceptionSPK('Ta funkcja nic nie zwraca.', ctx.start.line)
                         else:
                             ctx.result = returned_value
                         #else:
                         #    raise ExceptionSPK('Ta funkcja nic nie zwraca lub zwracana zmienna w funkcji nie została użyta.')
 
-
                     elif ctx.atom().VARIABLE_NAME():
-                        # self.walker.walk(self, ctx.atom().VARIABLE_NAME())
                         variable_name = str(ctx.atom().VARIABLE_NAME())
-                        ctx.result = self.get_variable_value(variable_name, ctx.start.line)
+                        if self.latest_function_result['name'] == variable_name:
+                            ctx.result = self.latest_function_result['value']
+                        else:
+                            ctx.result = self.get_variable_value(variable_name, ctx.start.line)
 
                     elif ctx.atom().INTEGER_NUMBER():
                         ctx.result = int(str(ctx.atom().INTEGER_NUMBER()))
@@ -537,7 +547,7 @@ class SecondStageListener(SPKListener):
                 return value
 
         # throw jakiś error
-        raise ExceptionSPK(f'Zmienna {variable_name} nie istnieje.', line)
+        raise ExceptionSPK(f'Zmienna o nazwie {variable_name} nie istnieje.', line)
         return None
 
 

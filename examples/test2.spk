@@ -1,0 +1,26 @@
+FUNKCJA f() ZWRACA CAŁKOWITA x {
+  x = "ABC";
+  ??x = 2;
+  WYPISZ "f()";
+}
+
+FUNKCJA g() {
+  WYPISZ "g()";
+}
+
+??WYPISZ g();
+WYPISZ f();
+
+
+
+
+
+
+
+
+
+
+
+
+
+

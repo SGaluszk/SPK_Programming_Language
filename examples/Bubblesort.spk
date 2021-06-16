@@ -1,0 +1,25 @@
+LISTA L = [100,7,2,9,4,0,12];
+WYPISZ L;
+DLA i W [OD 0 DO DŁUGOŚĆ(L)-1]{
+	DLA j W [OD 0 DO DŁUGOŚĆ(L)-i-2]{
+		JEŻELI L[j] > L[j+1] TO{
+			CAŁKOWITA tmp = L[j];
+			L[j] = L[j+1];
+			L[j+1] = tmp;
+			
+		}
+	}
+}
+WYPISZ L;
+
+
+
+
+
+
+
+
+
+
+
+

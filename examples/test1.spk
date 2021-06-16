@@ -1,0 +1,6 @@
+DLA indeks W [OD 1 DO 10000] {
+  WYPISZ indeks;
+}
+
+
+

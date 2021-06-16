@@ -1,5 +1,0 @@
-CAŁKOWITA x = 7;
-
-JEŻELI (x) TO {
-	WYPISZ "XD";
-}

@@ -1,1 +1,0 @@
-[{'x': {'type': 'CA£KOWITA', 'value': 1}}]
