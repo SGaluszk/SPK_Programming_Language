@@ -29,7 +29,7 @@ JEŻELI (x < 3) TO { x = x + 1} INACZEJ {x = 1};
 - pętle
  ```sh
 DOPÓKI x > 0 TO {
-  WYPISZ ”x wynosi” + X;
+    WYPISZ ”x wynosi” + X;
 }
 
 DLA i W [1, 2, 3, 4] { ... }
