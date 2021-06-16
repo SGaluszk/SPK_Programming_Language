@@ -99,7 +99,6 @@ class SecondStageListener(SPKListener):
             # print("Koniec lokalnego scope'a")
 
     def exitPrint_(self, ctx: SPKParser.Print_Context):
-        # time.sleep(1)
         if not self.skipping and not self.skipFBlock:
             if ctx.expr().result is not None:
                 result = ctx.expr().result
@@ -273,18 +272,46 @@ class SecondStageListener(SPKListener):
             if not self.skipExpr:
                 if not ctx.op and ctx.atom():
                     if ctx.atom().LENGTH():
-                        if ctx.atom().iterable().STRING():
-                            ctx.result = len(str(ctx.atom().iterable().STRING())[1:-1])
-                        elif ctx.atom().iterable().list_values():
-                            ctx.result = len(ctx.atom().iterable().list_values().expr())
-                        elif ctx.atom().iterable().VARIABLE_NAME():
-                            variable_name = str(ctx.atom().iterable().VARIABLE_NAME())
-                            variable = self.get_variable_value(variable_name, ctx.start.line)
-                            if type(variable) in (list, str):
-                                ctx.result = len(variable)
-                            else:
-                                raise ExceptionSPK(f'Nie można obliczyć długości zmiennej typu {get_type_SPK(type(variable))}.', ctx.start.line)
+                        value = ctx.atom().expr().result
+                        try:
+                            ctx.result = len(value)
+                        except:
+                            raise ExceptionSPK(f'Nie można obliczyć długości zmiennej typu {get_type_SPK(type(value))}.', ctx.start.line)
                         
+
+                        # if ctx.atom().iterable().STRING():
+                        #     ctx.result = len(str(ctx.atom().iterable().STRING())[1:-1])
+                        # elif ctx.atom().iterable().list_values():
+                        #     ctx.result = len(ctx.atom().iterable().list_values().expr())
+                        # elif ctx.atom().iterable().VARIABLE_NAME():
+                        #     variable_name = str(ctx.atom().iterable().VARIABLE_NAME())
+                        #     variable = self.get_variable_value(variable_name, ctx.start.line)
+                        #     if type(variable) in (list, str):
+                        #         ctx.result = len(variable)
+                        #     else:
+                        #         raise ExceptionSPK(f'Nie można obliczyć długości zmiennej typu {get_type_SPK(type(variable))}.', ctx.start.line)
+                        
+                    elif ctx.atom().TO_INT():
+                        value = ctx.atom().expr().result
+                        try:
+                            ctx.result = int(value)
+                        except:
+                            raise ExceptionSPK(f'JAKO_CAŁKOWITA() oczekuje wartości typu UŁAMKOWA lub NAPIS, podano {get_type_SPK(type(value))}', ctx.start.line)
+                        
+                    elif ctx.atom().TO_FLOAT():
+                        value = ctx.atom().expr().result
+                        try:
+                            ctx.result = float(value)
+                        except:
+                            raise ExceptionSPK(f'JAKO_UŁAMKOWA() oczekuje wartości typu CAŁKOWITA lub NAPIS, podano {get_type_SPK(type(value))}', ctx.start.line)
+                        
+                    elif ctx.atom().TO_STRING():
+                        value = ctx.atom().expr().result
+                        try:
+                            ctx.result = str(value)
+                        except:
+                            raise ExceptionSPK(f'JAKO_NAPIS() oczekuje wartości typu CAŁKOWITA lub NAPIS, podano {get_type_SPK(type(value))}', ctx.start.line)
+
                     elif ctx.atom().function_exec():
                         returned_value = ctx.atom().function_exec().returned_value
                         if not returned_value:
@@ -343,10 +370,12 @@ class SecondStageListener(SPKListener):
                     ctx.result = not ctx.expr(0).result
 
                 elif not ctx.op and ctx.POW() and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
-                    # for index in (0, 1):
-                    # #     if ctx.expr(index).atom().VARIABLE_NAME():
-                    #     self.walker.walk(self, ctx.expr(index))
-                    ctx.result = pow(ctx.expr(0).result, ctx.expr(1).result)
+                    
+                    try:
+                        ctx.result = pow(ctx.expr(0).result, ctx.expr(1).result)
+                    except:
+                        raise ExceptionSPK(f'Nie można wykonać potęgowania dla typów {get_type_SPK(type(ctx.expr(0).result))} i {get_type_SPK(type(ctx.expr(1).result))}.', ctx.start.line)
+
 
                 elif ctx.op and ctx.expr(0).result is not None and ctx.expr(1).result is not None:
 
@@ -540,6 +569,16 @@ class SecondStageListener(SPKListener):
             else:
                 raise ExceptionSPK('Użyto stopu poza pętlą.', ctx.start.line)
 
+   # Enter a parse tree produced by SPKParser#sleep_.
+    def exitSleep_(self, ctx:SPKParser.Sleep_Context):
+        if not self.skipping:
+            t = ctx.expr().result
+            if type(t) in (int, float):
+                time.sleep(t)
+            else:
+                raise ExceptionSPK(f'CZEKAJ() oczekuje wartość typu CAŁKOWITA lub UŁAMKOWA, podano {get_type_SPK(type(t))}', ctx.start.line)
+
+
     def get_variable_value(self, variable_name, line):
         for scope in reversed(self.memory['scopes']):
             if variable_name in scope.keys():
@@ -549,6 +588,7 @@ class SecondStageListener(SPKListener):
         # throw jakiś error
         raise ExceptionSPK(f'Zmienna o nazwie {variable_name} nie istnieje.', line)
         return None
+
 
 
 def get_type_SPK(python_type):

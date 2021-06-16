@@ -179,6 +179,15 @@ class SPKListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by SPKParser#sleep_.
+    def enterSleep_(self, ctx:SPKParser.Sleep_Context):
+        pass
+
+    # Exit a parse tree produced by SPKParser#sleep_.
+    def exitSleep_(self, ctx:SPKParser.Sleep_Context):
+        pass
+
+
     # Enter a parse tree produced by SPKParser#expr.
     def enterExpr(self, ctx:SPKParser.ExprContext):
         pass

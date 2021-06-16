@@ -3,7 +3,7 @@ grammar SPK;
 program : function_* bigStmt* EOF;
 
 
-bigStmt : (if_stat | while_stat | for_loop | declaration SEP | assignment SEP | print_ SEP | function_exec SEP | break_ SEP);
+bigStmt : (if_stat | while_stat | for_loop | declaration SEP | assignment SEP | print_ SEP | function_exec SEP | break_ SEP |sleep_ SEP);
 
 // if_ : IF_ condition_block THEN_ block;
 if_stat : IF_ condition_block (ELSE IF_ condition_block)* (ELSE block)?;
@@ -33,7 +33,7 @@ declaration : TYPE_NAME VARIABLE_NAME ASSIGN expr ;
 assignment : VARIABLE_NAME list_index? ASSIGN expr ;
 
 break_: BREAK_;
-
+sleep_: SLEEP_ '(' expr ')';
 TYPE_NAME : (INT | LIST | FLOATING | STRING_ | BOOL_ );
 BOOL_ : 'LOGICZNA';
 FUN_ : 'FUNKCJA';
@@ -53,6 +53,11 @@ FROM: 'OD';
 TO: 'DO';
 RETURNS: 'ZWRACA';
 BREAK_: 'STOP';
+TO_INT: 'JAKO_CA\u0141KOWITA';
+TO_FLOAT: 'JAKO_U\u0141AMKOWA';
+TO_STRING: 'JAKO_NAPIS';
+SLEEP_: 'CZEKAJ';
+
 
 expr
  : expr POW expr                        
@@ -69,7 +74,10 @@ expr
 
 atom
  : OPAR expr CPAR 
- | LENGTH '(' iterable ')'
+ | LENGTH '(' expr ')'
+ | TO_INT '(' expr ')'
+ | TO_FLOAT '(' expr ')'
+ | TO_STRING '(' expr ')'
  | function_exec                     
  | INTEGER_NUMBER 
  | FLOAT_NUMBER
