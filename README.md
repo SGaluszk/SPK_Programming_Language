@@ -35,14 +35,7 @@ WYPISZ ”x wynosi” + X;
 DLA i W [1, 2, 3, 4] { ... }
 
 LISTA lista = [1, 2, 3, 4];
-
-DLA i W lista{
-	DLA j W lista{
-	DLA k W lista{
-	WYPISZ i+j+k;
-   }
- }
-}
+DLA i W lista{ ... }
 ```
 - wypisywanie danych
  ```sh
