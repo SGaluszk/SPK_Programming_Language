@@ -1,0 +1,15 @@
+CAŁKOWITA x = 1000;
+
+JEŻELI x > 0 ORAZ x < 10 TO{
+  WYPISZ "IF";
+  JEŻELI Prawda TO {
+    WYPISZ "IF W IFIE";
+  }
+}
+INACZEJ JEŻELI x == 100 TO{
+  WYPISZ "ELSE IF";
+}
+INACZEJ {
+  WYPISZ "ELSE";
+}
+

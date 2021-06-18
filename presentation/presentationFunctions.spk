@@ -1,0 +1,26 @@
+FUNKCJA f() ZWRACA CAŁKOWITA wynik {
+  wynik = 10;
+}
+
+FUNKCJA g() {
+  WYPISZ "g()";
+}
+
+FUNKCJA h(CAŁKOWITA x) {
+  WYPISZ "h()";
+}
+
+CAŁKOWITA rezultat = f();
+?? UŁAMKOWA rezultat2 = f();
+?? CAŁKOWITA rezultat3 = g();
+
+?? h();
+?? h("abc");
+?? h(1,2);
+
+
+
+
+
+
+

@@ -61,10 +61,10 @@ class SecondStageListener(SPKListener):
                                 if type(index) == int:
 
                                     variable = scope[variable_name]['value']
-                                    if index < len(variable):
+                                    try:
                                         variable[index] = value
                                         scope[variable_name]['value'] = variable
-                                    else:
+                                    except:
                                         raise ExceptionSPK('Indeks listy poza zakresem.', ctx.start.line)
                                         
                                 else:
@@ -277,20 +277,7 @@ class SecondStageListener(SPKListener):
                             ctx.result = len(value)
                         except:
                             raise ExceptionSPK(f'Nie można obliczyć długości zmiennej typu {get_type_SPK(type(value))}.', ctx.start.line)
-                        
 
-                        # if ctx.atom().iterable().STRING():
-                        #     ctx.result = len(str(ctx.atom().iterable().STRING())[1:-1])
-                        # elif ctx.atom().iterable().list_values():
-                        #     ctx.result = len(ctx.atom().iterable().list_values().expr())
-                        # elif ctx.atom().iterable().VARIABLE_NAME():
-                        #     variable_name = str(ctx.atom().iterable().VARIABLE_NAME())
-                        #     variable = self.get_variable_value(variable_name, ctx.start.line)
-                        #     if type(variable) in (list, str):
-                        #         ctx.result = len(variable)
-                        #     else:
-                        #         raise ExceptionSPK(f'Nie można obliczyć długości zmiennej typu {get_type_SPK(type(variable))}.', ctx.start.line)
-                        
                     elif ctx.atom().TO_INT():
                         value = ctx.atom().expr().result
                         try:
@@ -313,15 +300,19 @@ class SecondStageListener(SPKListener):
                             raise ExceptionSPK(f'JAKO_NAPIS() oczekuje wartości typu CAŁKOWITA lub NAPIS, podano {get_type_SPK(type(value))}', ctx.start.line)
 
                     elif ctx.atom().function_exec():
+                        func_name = str(ctx.atom().function_exec().VARIABLE_NAME())
                         returned_value = ctx.atom().function_exec().returned_value
-                        if not returned_value:
+
+                        if returned_value:
                             function_result = self.latest_function_result['value']
                             if function_result is not None:
                                 ctx.result = function_result
                             else:
-                                raise ExceptionSPK('Ta funkcja nic nie zwraca.', ctx.start.line)
+                                raise ExceptionSPK(f'Funkcja {func_name} nic nie zwraca.', ctx.start.line)
                         else:
-                            ctx.result = returned_value
+                            raise ExceptionSPK(f'Funkcja {func_name} nic nie zwraca.', ctx.start.line)
+
+                            # ctx.result = returned_value
                         #else:
                         #    raise ExceptionSPK('Ta funkcja nic nie zwraca lub zwracana zmienna w funkcji nie została użyta.')
 
@@ -347,7 +338,10 @@ class SecondStageListener(SPKListener):
                         if type(variable) in (str, list):
                             index = ctx.atom().list_element().list_index().expr().result
                             if type(index) == int:
-                                ctx.result = variable[index]
+                                try:
+                                    ctx.result = variable[index]
+                                except:
+                                    raise ExceptionSPK('Indeks listy poza zakresem.', ctx.start.line)
                             else:
                                 raise ExceptionSPK('Indeks musi być typu całkowitego.', ctx.start.line)
 
@@ -536,7 +530,8 @@ class SecondStageListener(SPKListener):
                 if ctx.iterable().VARIABLE_NAME():
                     iterated = self.get_variable_value(str(ctx.iterable().VARIABLE_NAME()), ctx.start.line)
                     if type(iterated) not in (list, str):
-                        iterated = None
+                        raise ExceptionSPK(f'Można iterować tylko po wartościach typu LISTA lub NAPIS, otrzymano {get_type_SPK(type(iterated))}.', ctx.start.line)
+
                 elif ctx.iterable().STRING():
                     iterated = str(ctx.iterable().STRING())[1:-1]
                 elif ctx.iterable().list_values():
@@ -548,7 +543,7 @@ class SecondStageListener(SPKListener):
                     if type(start) == type(end) == int:
                         iterated = list(range(start, end+1))
                     else:
-                        raise ExceptionSPK('BŁĄD: [OD .. DO ..] oczekuje typu całkowitego.', ctx.start.line)
+                        raise ExceptionSPK('[OD .. DO ..] oczekuje typu całkowitego.', ctx.start.line)
 
                 if iterated is not None:
                     for i in iterated:

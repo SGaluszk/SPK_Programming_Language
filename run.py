@@ -12,7 +12,6 @@ from contextlib import redirect_stdout
 import sys
 from main import main_SPK
 
-filename = ''
 filepath = ''
 
 
@@ -29,8 +28,8 @@ def open_file():
     with open(filepath, "r",encoding="UTF-8") as input_file:
         text = input_file.read()
         txt_edit.insert(tk.END, text)
-    global filename
-    filename = os.path.splitext(os.path.basename(input_file.name))[0]
+    # global filename
+    # filename = os.path.splitext(os.path.basename(input_file.name))[0]
     window.title(f"Nauka języka SPK - {filepath}")
 
 
@@ -64,6 +63,8 @@ def save():
 
 
 def run_file():
+    global filepath
+
     save()
 
     txt_output.configure(state="normal")
@@ -73,7 +74,7 @@ def run_file():
     txt_data.delete(1.0, tk.END)
     print('', end='')
 
-    global_variables = main_SPK(f'examples/{filename}')
+    global_variables = main_SPK(filepath)
     global_variables_text = 'Zmienne globalne:\n'
     if not global_variables:
         global_variables_text += 'Nie znaleziono zmiennych globalnych.'
@@ -120,7 +121,7 @@ def tab(arg):
 
 def comment(arg):
     # print(txt_edit.index())
-    txt_edit.insert(f'{tk.INSERT} linestart', "??")
+    txt_edit.insert(f'{tk.INSERT} linestart', "?? ")
     return 'break'
 
 

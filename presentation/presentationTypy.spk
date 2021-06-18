@@ -1,0 +1,21 @@
+NAPIS liczbaNapis = "10";
+CAŁKOWITA x = 1;
+UŁAMKOWA x2 = 1.23;
+LOGICZNA log = Prawda;
+LISTA lista = [1,2,3];
+
+CAŁKOWITA całk = JAKO_CAŁKOWITA(1.2);
+CAŁKOWITA całk2 = JAKO_CAŁKOWITA(liczbaNapis);
+UŁAMKOWA ułamk = JAKO_UŁAMKOWA(liczbaNapis);
+NAPIS napisZLiczby = JAKO_NAPIS(123);
+
+LISTA listaDoPrezentacji = [1,2,3,4,5,6];
+listaDoPrezentacji[0] = 100;
+
+WYPISZ listaDoPrezentacji;
+WYPISZ listaDoPrezentacji[1];
+WYPISZ "długość:";
+WYPISZ DŁUGOŚĆ(listaDoPrezentacji);
+
+
+

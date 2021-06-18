@@ -1,0 +1,13 @@
+FUNKCJA Silnia ( CAŁKOWITA x ) ZWRACA CAŁKOWITA wynik{
+	JEŻELI (x == 1 LUB x ==0 )TO{
+		wynik = 1;
+	}
+	INACZEJ{
+		wynik = Silnia(x-1) * x;
+
+	}
+}
+
+CAŁKOWITA wynikSilni = Silnia(7);
+WYPISZ wynikSilni;
+WYPISZ Silnia(3);

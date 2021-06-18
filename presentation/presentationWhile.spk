@@ -1,0 +1,5 @@
+CAŁKOWITA x = 10;
+DOPÓKI x > 0 TO{
+  WYPISZ x;
+  x = x - 1;
+}

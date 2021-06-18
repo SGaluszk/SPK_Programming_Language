@@ -1,0 +1,16 @@
+DLA element W [OD 1 DO 3] {
+  WYPISZ element;
+  CZEKAJ(1);
+}
+
+DLA element W [OD 10 DO 13] {
+  WYPISZ element;
+??   CZEKAJ("abc");
+}
+
+DLA element W [OD 100 DO 110] {
+  WYPISZ element;
+  JEŻELI element == 102 TO {
+    STOP;
+  }
+}

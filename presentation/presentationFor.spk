@@ -1,0 +1,40 @@
+LISTA lista = [1,2,3];
+
+WYPISZ "iterowanie po zmiennej 2D";
+DLA i W lista {
+  DLA j W lista {
+    WYPISZ JAKO_NAPIS(i) + " " + JAKO_NAPIS(j);
+  }
+}
+
+WYPISZ "iterowanie po liście";
+DLA element W [70,80,90] {
+  WYPISZ element;
+}
+
+WYPISZ "iterowanie po napisie";
+DLA element W "ABC" {
+  WYPISZ element;
+}
+
+WYPISZ "iterowanie po zakresie";
+DLA element W [OD 11 DO 14] {
+  WYPISZ element;
+}
+
+CAŁKOWITA x = 9;
+LISTA zakres = [OD 1 DO x];
+
+WYPISZ "iterowanie po zakresie stworzonym ze zmiennej";
+DLA element W zakres {
+  WYPISZ element;
+}
+
+DLA element W x {
+  WYPISZ element;
+}
+
+
+
+
+

@@ -17,14 +17,12 @@ def pretty_printing(obj):
     return result
 
 
-def main_SPK(filename):
+def main_SPK(filepath):
 
-    # output_scopes = "Zmienne globalne: \n"
-    name = filename + '.spk'
     try:
-        data = open(name, 'r', encoding="UTF-8").read()
+        data = open(filepath, 'r', encoding="UTF-8").read()
     except FileNotFoundError:
-        print(f'BŁĄD! Nie znaleziono pliku {name}.')
+        print(f"BŁĄD! Nie znaleziono pliku {filepath.split('/')[-1]}.")
         return
     inputStream = InputStream(data)
 
@@ -50,20 +48,22 @@ def main_SPK(filename):
         listener2 = SecondStageListener(listener1.functions, walker)
         walker.walk(listener2, tree)
 
-        # output_scopes += pretty_printing(listener2.memory['scopes'])
+        global_variables = [f"{v['type']} {k} = {v['value']};" for k, v in listener2.memory['scopes'][0].items()]
+        return global_variables
+
     except SyntaxExceptionSPK as e:
         print(e)
+        return ['---']
     except ExceptionSPK as e:
         print(e)
+        return ['---']
     except Exception as e:
-        # print(e)
+        print(e)
         if str(e) == 'maximum recursion depth exceeded':
             print('BŁĄD! Przekroczono limit głębokości rekursji.')
         else:
             print('BŁĄD! Wystąpił niezidentyfikowany błąd.')
-
-    global_variables = [f"{v['type']} {k} = {v['value']};" for k, v in listener2.memory['scopes'][0].items()]
-    return global_variables
+        return ['---']
 
 
 if __name__ == '__main__':
