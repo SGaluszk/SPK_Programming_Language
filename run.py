@@ -65,17 +65,25 @@ def save():
 
 def run_file():
     save()
+
     txt_output.configure(state="normal")
-    txt_output.delete(1.0,tk.END)
-
-    output_scopes = "Zmienne globalne:"
-
-    output_scopes = main_SPK(f'examples/{filename}')
-    txt_output.configure(state="disabled")
+    txt_output.delete(1.0, tk.END)
 
     txt_data.configure(state="normal")
     txt_data.delete(1.0, tk.END)
-    txt_data.insert(1.0, output_scopes)
+    print('', end='')
+
+    global_variables = main_SPK(f'examples/{filename}')
+    global_variables_text = 'Zmienne globalne:\n'
+    if not global_variables:
+        global_variables_text += 'Nie znaleziono zmiennych globalnych.'
+    else:
+        for var in global_variables:
+            global_variables_text += var + '\n'
+
+    txt_output.configure(state="disabled")
+
+    txt_data.insert(1.0, global_variables_text)
     txt_data.configure(state="disabled")
 
 

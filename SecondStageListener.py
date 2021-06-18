@@ -364,7 +364,13 @@ class SecondStageListener(SPKListener):
                         ctx.result = ctx.atom().expr().result
 
                 elif not ctx.op and ctx.MINUS():
-                    ctx.result = -1 * ctx.expr(0).result
+                    value = ctx.expr(0).result
+                    if type(value) in (int, float):
+                        ctx.result = -1 * value
+                    else:
+                        raise ExceptionSPK(
+                            f'Ze znakiem minus mogą występować tylko wartości typu CAŁKOWITA oraz UŁAMKOWA, podano {get_type_SPK(type(value))}.',
+                            ctx.start.line)
 
                 elif not ctx.op and ctx.NOT():
                     ctx.result = not ctx.expr(0).result

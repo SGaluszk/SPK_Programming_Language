@@ -1,6 +1,10 @@
-DLA indeks W [OD 1 DO 10000] {
-  WYPISZ indeks;
-}
+CAŁKOWITA z = 111;
+??WYPISZ z;
+CZEKAJ(1);
+CAŁKOWITA x = 120;
+CAŁKOWITA y = 3;
+??WYPISZ y;
+
 
 
 

@@ -9,6 +9,8 @@ class SyntaxExceptionSPK(Exception):
         if match := re.search("no viable alternative at input '(.+)'", message):
             bad_word = match.group(1)
             self.message = f'Błąd składniowy w słowie "{bad_word}".'
+            if bad_word == '{}':
+                self.message += ' Blok nie może być pusty.'
         elif match := re.search("missing '(.*)' at", message):
             self.message = f'Niepoprawna składnia. Brakuje "{match.group(1)}".'
         elif "extraneous input 'FUNKCJA'" in message:

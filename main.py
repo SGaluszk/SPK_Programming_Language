@@ -19,7 +19,7 @@ def pretty_printing(obj):
 
 def main_SPK(filename):
 
-    output_scopes = "Zmienne globalne: \n"
+    # output_scopes = "Zmienne globalne: \n"
     name = filename + '.spk'
     try:
         data = open(name, 'r', encoding="UTF-8").read()
@@ -50,7 +50,7 @@ def main_SPK(filename):
         listener2 = SecondStageListener(listener1.functions, walker)
         walker.walk(listener2, tree)
 
-        output_scopes += pretty_printing(listener2.memory['scopes'])
+        # output_scopes += pretty_printing(listener2.memory['scopes'])
     except SyntaxExceptionSPK as e:
         print(e)
     except ExceptionSPK as e:
@@ -62,7 +62,8 @@ def main_SPK(filename):
         else:
             print('BŁĄD! Wystąpił niezidentyfikowany błąd.')
 
-    return output_scopes
+    global_variables = [f"{v['type']} {k} = {v['value']};" for k, v in listener2.memory['scopes'][0].items()]
+    return global_variables
 
 
 if __name__ == '__main__':
